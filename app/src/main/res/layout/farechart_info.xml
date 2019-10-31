@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:id="@+id/textViewRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:fontFamily="sans-serif-black"
+            android:text="ROUTE:"
+
+            android:textSize="17dp" />
+
+        <TextView
+            android:id="@+id/textviewRouteNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textviewRouteStart"
+            android:fontFamily="sans-serif-black"
+            android:padding="5dp"
+            android:text="Route Number"
+
+            android:textSize="17dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp">
+
+        <TextView
+            android:id="@+id/textviewRouteStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:fontFamily="sans-serif-black"
+            android:text="Route Start"
+            android:textSize="17dp" />
+
+        <TextView
+            android:id="@+id/textviewTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:fontFamily="sans-serif-condensed"
+            android:padding="5dp"
+            android:text=" - "
+            android:textSize="17dp" />
+
+        <TextView
+            android:id="@+id/textviewRouteFinish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:padding="5dp"
+            android:text="Route Finish"
+            android:textSize="17dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/textviewSubRouteStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:fontFamily="sans-serif-black"
+            android:text="Sub-Route Start"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/textview-"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:fontFamily="sans-serif-condensed"
+            android:padding="5dp"
+            android:text=" - "
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/textviewSubRouteFinish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:padding="5dp"
+            android:text="Sub-Route Finish"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/textviewSubRoutePrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:padding="5dp"
+            android:text="Price"
+            android:textSize="15dp"
+            android:layout_marginLeft="5dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
