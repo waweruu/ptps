@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.owner.AddConductorFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="90dp"
+        android:orientation="vertical"
+        >
+        <EditText
+            android:id="@+id/editTextSetConducorFname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="First Name"
+            android:layout_margin="10dp"
+            android:inputType="textPersonName"
+            />
+
+        <EditText
+            android:id="@+id/editTextSetConductorLname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Last Name"
+            android:inputType="textPersonName"
+            android:layout_below="@id/editTextDriverFirstName"
+            android:layout_margin="10dp"
+            />
+
+        <EditText
+            android:id="@+id/editTextSetConductorID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="ID Number"
+            android:inputType="number"
+            android:layout_margin="10dp"
+            android:layout_below="@id/editTextDriverLastName"
+            />
+
+        <EditText
+            android:id="@+id/editTextSetConductorPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@android:string/emptyPhoneNumber"
+            android:inputType="phone"
+            android:layout_margin="10dp"
+            android:layout_below="@id/editTextDriverId"
+            />
+
+
+        <Button
+            android:id="@+id/buttonInAddConductor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primaryColor"
+            android:text=" ADD CONDUCTOR "
+            android:textColor="@color/textColor"
+            android:layout_below="@id/editTextDriverPhoneNumber"
+            android:layout_margin="50dp"/>
+    </LinearLayout>
+
+</LinearLayout>
