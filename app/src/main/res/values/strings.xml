@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">PTPS</string>
+
+    <string name="button_sign_out"> Sign Out </string>
+    <string name="button_next"> Next </string>
+    <string name="button_finish"> Finish </string>
+    <string name="button_passenger_login">Sign in as Passenger / Owner</string>
+    <string name="button_owner_login">Sign in as Owner</string>
+    <string name="button_operator_login">Sign in as Operator</string>
+
+    <string name="label_user_type">User Type</string>
+    <string name="label_first_name">First Name</string>
+    <string name="label_last_name">Last Name</string>
+    <string name="label_phone_number">Phone Number</string>
+    <string name="label_id_number">ID Number</string>
+    <string name="label_vehicle_capacity">Vehicle Capacity</string>
+    <string name="label_vehicle_type">Vehicle Type</string>
+    <string name="label_licence_plate">Licence Plate</string>
+    <string name="label_route_start">Route Start</string>
+    <string name="label_route_finish">Route Finish</string>
+    <string name="label_route_number">Route Number</string>
+    <string name="label_vehicle_details">Vehicle Details</string>
+    <string name="label_driver_conductor_details">Driver/Conductor Details</string>
+    <string name="label_route_info">Route Info</string>
+    <string name="label_subroutes">SubRoutes</string>
+
+    <string name="title_activity_landing_two">LandingTwoActivity</string>
+    <string name="title_conductor_details">Conductor Details</string>
+    <string name="title_driver_details">Driver Details</string>
+    <string name="title_passenger_module">Passenger Module</string>
+    <string name="title_owner_module">Owner Module</string>
+    <string name="title_operator_module">Operator Module</string>
+    <string name="title_vehicle_details">Vehicle Details</string>
+    <string name="title_provide_details">Provide Details</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

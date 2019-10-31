@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/labelFirstName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/label_first_name"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/textFirstName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        />
+
+    <TextView
+        android:id="@+id/labelLastName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/label_last_name"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/textLastName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        />
+
+    <TextView
+        android:id="@+id/labelPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/label_phone_number"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/textPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        />
+
+    <TextView
+        android:id="@+id/labelUserType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/label_user_type"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/textUserType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        />
+
+</LinearLayout>

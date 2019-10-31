@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:padding="16dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="16dp"
+        android:background="#D3D3D3" />
+
+    <TextView
+        android:id="@+id/labelRouteInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryLightColor"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="@string/label_route_info" />
+
+    <LinearLayout
+        android:id="@+id/subItemFareChart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/label_route_number"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/textRouteNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/label_route_start"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/textRouteStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/label_route_finish"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/textRouteFinish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

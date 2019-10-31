@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single" android:id="@+id/passenger_menu">
+        <item
+            android:id="@+id/nav_passenger_home_frag"
+            android:icon="@drawable/ic_menu_home"
+            android:title="Home"
+            android:checked="true"/>
+
+        <item
+            android:id="@+id/nav_scan_frag"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Scan QR Code" />
+
+        <item
+            android:id="@+id/nav_payment_history_frag"
+            android:icon="@drawable/ic_payment_black_24dp"
+            android:title="Payment History" />
+
+        <item
+            android:id="@+id/nav_passenger_account_frag"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="Account" />
+    </group>
+</menu>

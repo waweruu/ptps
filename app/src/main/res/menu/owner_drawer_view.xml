@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single" android:id="@+id/owner_menu">
+        <item
+            android:id="@+id/nav_owner_home_frag"
+            android:icon="@drawable/ic_menu_home"
+            android:title="Home"
+            android:checked="true"/>
+
+        <item
+            android:id="@+id/nav_fare_chart_frag"
+            android:icon="@drawable/ic_fare_chart"
+            android:title="Fare Chart" />
+
+        <item
+            android:id="@+id/nav_payment_details_frag"
+            android:icon="@drawable/ic_payment_black_24dp"
+            android:title="Payment Details" />
+
+        <item
+            android:id="@+id/nav_passenger_reviews_frag"
+            android:icon="@drawable/ic_passenger_reviews"
+            android:title="Passenger Reviews" />
+
+        <item
+            android:id="@+id/nav_add_vehicle_frag"
+            android:icon="@drawable/ic_add_vehicle"
+            android:title="Add Vehicle" />
+        <item
+            android:id="@+id/nav_owner_account_frag"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="Account" />
+    </group>
+</menu>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragments.owner.FareChartFragment"
+    android:id="@+id/fragment_container">
+
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+        android:layout_centerInParent="true"
+        android:layout_above="@id/spinnerRouteStart"
+        android:id="@+id/spinnerRouteNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        />
+
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+        android:layout_centerInParent="true"
+        android:layout_above="@id/spinnerRouteFinish"
+        android:id="@+id/spinnerRouteStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        />
+
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+        android:layout_centerInParent="true"
+        android:layout_above="@id/buttonCreateChart"
+        android:id="@+id/spinnerRouteFinish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"/>
+
+    <Button
+        android:id="@+id/buttonCreateChart"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:background="@color/primaryDarkColor"
+        android:text="CREATE CHART"
+        android:textColor="@color/primaryTextColor" />
+
+</RelativeLayout>

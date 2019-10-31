@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.isproject.ptps">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.LandingTwoActivity"
+            android:label="@string/title_activity_landing_two"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".activities.ConductorDetailsActivity" />
+        <activity android:name=".activities.DriverDetailsActivity" />
+        <activity android:name=".activities.VehicleDetailsActivity" />
+        <activity android:name=".activities.InputDetailsActivity" />
+        <activity android:name=".activities.LandingActivity" />
+        <activity android:name=".activities.WelcomeActivity" android:theme="@style/AppTheme.Launcher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

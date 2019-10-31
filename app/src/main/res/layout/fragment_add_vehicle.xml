@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.owner.AddVehicleFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="45dp"
+        android:layout_marginLeft="45dp"
+        android:padding="10dp">
+        <Spinner
+            android:id="@+id/spinnerVehicleType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginTop="30dp"/>
+
+        <EditText
+            android:id="@+id/editTextSetVehicleCapacity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Vehicle Capacity"
+            android:padding="10dp"
+            android:layout_marginTop="30dp"/>
+
+        <EditText
+            android:id="@+id/editTextSetVehicleLicense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="License Plate"
+            android:padding="10dp"
+            android:layout_marginTop="30dp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="206dp">
+
+        <Button
+            android:id="@+id/buttonInAddVehicle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@color/primaryDarkColor"
+            android:text="NEXT">
+
+        </Button>
+    </RelativeLayout>
+
+</LinearLayout>
