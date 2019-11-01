@@ -146,4 +146,18 @@
         android:text="View Fare Chart"
         android:textColor="@color/primaryColor"
         android:textSize="15dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="110dp">
+        <Button
+            android:id="@+id/buttonBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BACK"
+            android:layout_marginLeft="15dp"
+            android:background="@color/primaryDarkColor"
+            android:textColor="@color/primaryTextColor"/>
+    </LinearLayout>
 </LinearLayout>

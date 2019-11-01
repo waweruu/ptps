@@ -38,7 +38,7 @@ public class EditChartFragment extends Fragment {
     String licencePlate;
     DatabaseReference reff;
     FirebaseDatabase firebaseDatabase;
-    Button createSubroute;
+    Button createSubroute,back;
     SubRoute subRoute=new SubRoute();
     String subrouteStart;
     String subrouteFinish;
@@ -75,6 +75,8 @@ public class EditChartFragment extends Fragment {
         createSubroute=view.findViewById(R.id.buttonCreateSubroute);
 
         viewChart=view.findViewById(R.id.textviewViewChart);
+
+        back=view.findViewById(R.id.buttonBack);
 
 
         return view;
@@ -158,6 +160,13 @@ public class EditChartFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getInfo();
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveBack();
             }
         });
 
@@ -307,6 +316,18 @@ public class EditChartFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("LICENCE PLATE", licencePlate);
         fragment.setArguments(bundle);
+
+        ft.replace(R.id.fl_content, fragment);
+        ft.addToBackStack("FRAGMENT");
+        ft.commit();
+    }
+    public void moveBack()
+    {
+        Fragment fragment = new FareChartFragment();
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
 
         ft.replace(R.id.fl_content, fragment);
         ft.addToBackStack("FRAGMENT");

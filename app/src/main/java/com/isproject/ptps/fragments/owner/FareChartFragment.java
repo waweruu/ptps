@@ -1,5 +1,6 @@
 package com.isproject.ptps.fragments.owner;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,9 +23,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.isproject.ptps.FareChart;
 import com.isproject.ptps.R;
 import com.isproject.ptps.Routes;
+import com.isproject.ptps.activities.InputDetailsActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -41,6 +44,7 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
     DatabaseReference databaseReference;
     String routeNumber;
     FareChart fareChart = new FareChart();
+    AlertDialog.Builder builder;
 
     public FareChartFragment() {
         // Required empty public constructor
@@ -90,21 +94,6 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
 
         DatabaseReference db_ref = firebaseDatabase.getReference().child("Users")
                 .child(userUID).child("vehicles");
-
-
-        /*db_ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String key = dataSnapshot.getKey();
-                Toast.makeText(getContext(), key, Toast.LENGTH_LONG).show();
-                licencePlate = dataSnapshot.child(key).getValue().toString();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
 
         db_ref.addChildEventListener(new ChildEventListener() {
             @Override
@@ -161,17 +150,33 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(start.getSelectedItem().toString().isEmpty()||finish.getSelectedItem().toString().isEmpty()||route_number.getSelectedItem().toString().isEmpty()){
+                    builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Please fill all the fields.");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                String routeNumber = route_number.getSelectedItem().toString();
-                String routeStart=start.getSelectedItem().toString();
-                String routeFinish=finish.getSelectedItem().toString();
-                fareChart.setRouteStart(routeStart);
-                fareChart.setRouteFinish(routeFinish);
-                //FareChart fareChart = new FareChart(routeNumber, routeStart, routeFinish);
-                databaseReference.child("Vehicles").child(licencePlate)
-                        .child("FareChart").setValue(fareChart);
-                Toast.makeText(getActivity(),"Chart Created successfully",Toast.LENGTH_LONG).show();
-                getInfo(routeNumber,routeStart,routeFinish);
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
+                else{
+                    String routeNumber = route_number.getSelectedItem().toString();
+                    String routeStart=start.getSelectedItem().toString();
+                    String routeFinish=finish.getSelectedItem().toString();
+                    fareChart.setRouteStart(routeStart);
+                    fareChart.setRouteFinish(routeFinish);
+                    //FareChart fareChart = new FareChart(routeNumber, routeStart, routeFinish);
+                   databaseReference.child("Vehicles").child(licencePlate)
+                            .child("FareChart").setValue(fareChart);
+                    Toast.makeText(getActivity(),"Chart Created successfully",Toast.LENGTH_LONG).show();
+                    getInfo(routeNumber,routeStart,routeFinish);
+                }
+
             }
         });
 
