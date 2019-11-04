@@ -19,7 +19,7 @@
         <activity
             android:name=".activities.LandingTwoActivity"
             android:label="@string/title_activity_landing_two"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.ConductorDetailsActivity" />
         <activity android:name=".activities.DriverDetailsActivity" />
         <activity android:name=".activities.VehicleDetailsActivity" />
@@ -32,6 +32,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".FMS">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

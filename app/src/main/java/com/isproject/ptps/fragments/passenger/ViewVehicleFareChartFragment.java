@@ -23,12 +23,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.isproject.ptps.FMS;
+import com.isproject.ptps.Review;
 import com.isproject.ptps.mpesa.Mode;
 import com.isproject.ptps.mpesa.Mpesa;
 import com.isproject.ptps.mpesa.interfaces.AuthListener;
@@ -60,23 +68,25 @@ import com.isproject.ptps.SubRoutesList;
 import com.isproject.ptps.User;
 import com.isproject.ptps.UserHolder;
 import com.isproject.ptps.Vehicle;
+import com.isproject.ptps.mpesa.utils.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ViewVehicleFareChartFragment extends Fragment {
 
-    Operator conductor = new Operator(), driver = new Operator();
-    Vehicle vehicle = new Vehicle();
-    FareChart fareChart = new FareChart();
-    SubRoutesList list = new SubRoutesList();
-    ArrayList<DataObject> mDataModels;
-    ArrayList<SubRoute> mSubRoutes;
-    RecyclerView recyclerView;
-    ProgressBar progressBar;
-    AlertDialog.Builder builder;
-    AlertDialog alertDialog;
+    private Operator conductor = new Operator(), driver = new Operator();
+    private Vehicle vehicle = new Vehicle();
+    private FareChart fareChart = new FareChart();
+    private SubRoutesList list = new SubRoutesList();
+    private ArrayList<DataObject> mDataModels;
+    private ArrayList<SubRoute> mSubRoutes;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
 
+    public static final String NOTIFICATION = "PushNotification";
     public static final String BUSINESS_SHORT_CODE = "174379";
     public static final String PASSKEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
     public static final String CONSUMER_KEY = "oMbBhDW1Dj4HewRIjaZXTJNDjQ06b48z";
@@ -84,6 +94,21 @@ public class ViewVehicleFareChartFragment extends Fragment {
     public static final String CALLBACK_URL = "https://us-central1-public-transport-system-84f9c.cloudfunctions.net/details/";
     public static final String SHARED_PREFERENCES = "com.isproject.ptps";
     public static final String USER_UID = FirebaseAuth.getInstance().getUid();
+    public static final String TAG = "ViewVehicleFareChartFragment";
+    public String LICENCE_PLATE;
+    private String TOKEN;
+
+    private BroadcastReceiver mRegBroadRec = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //if(intent.getAction().equals(NOTIFICATION)) {
+                String title = intent.getStringExtra("title");
+                String body = intent.getStringExtra("body");
+                int code = intent.getIntExtra("code", 0);
+                showDialog(title, body, code);
+            //}
+        }
+    };
 
     public ViewVehicleFareChartFragment() {
         // Required empty public constructor
@@ -111,6 +136,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
 
         final Bundle bundle = this.getArguments();
         final String licencePlate = bundle.getString("LICENCE_PLATE");
+        LICENCE_PLATE = licencePlate;
 
         Query query = FirebaseDatabase.getInstance().getReference().child("Vehicles")
                 .orderByKey().equalTo(licencePlate).limitToFirst(1);
@@ -172,8 +198,8 @@ public class ViewVehicleFareChartFragment extends Fragment {
                 DataModelsAdapter adapter = new DataModelsAdapter(mDataModels, mSubRoutes, getContext());
                 adapter.setmListener(new DataModelsAdapter.DataPasser() {
                     @Override
-                    public void passData(SubRoute subRoute) {
-                        int amount = Integer.parseInt(subRoute.getSubroutePrice());
+                    public void passData(final SubRoute subRoute) {
+                        final int amount = Integer.parseInt(subRoute.getSubroutePrice());
                         String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
                         phoneNumber = phoneNumber.substring(1);
                         //String phoneNumber = "0712771254";
@@ -182,25 +208,43 @@ public class ViewVehicleFareChartFragment extends Fragment {
                         builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Processing payment");
                         builder.setCancelable(true);
+                        builder.setMessage("Please wait as your payment is processed.");
                         alertDialog = builder.create();
                         alertDialog.show();
+                        int i = 0;
+                        while(i < 5) {
+                            i++;
+                            if(i == 5) alertDialog.hide();
+                        }
 
                         String[] keys = licencePlate.split(" ");
-                        String numberPlate = keys[0] + "_" + keys[1];
+                        final String numberPlate = keys[0] + "_" + keys[1];
 
-                        STKPush.Builder stkBuilder = new STKPush.Builder(BUSINESS_SHORT_CODE, PASSKEY,
-                                amount, BUSINESS_SHORT_CODE, phoneNumber, CALLBACK_URL +
-                                numberPlate + "/" + USER_UID + "/" + subRoute.getSubrouteStart() +
-                                "/" + subRoute.getSubrouteFinish());
-                        //stkBuilder.setCallBackURL(CALLBACK_URL);
+                        final String finalPhoneNumber = phoneNumber;
+                        FirebaseInstanceId.getInstance().getInstanceId()
+                                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                        if(!task.isSuccessful()) {
+                                            Log.w(TAG, "getInstanceId failed", task.getException());
+                                            return;
+                                        }
+                                        TOKEN = task.getResult().getToken();
+                                        STKPush.Builder stkBuilder = new STKPush.Builder(BUSINESS_SHORT_CODE, PASSKEY,
+                                                amount, BUSINESS_SHORT_CODE, finalPhoneNumber, CALLBACK_URL +
+                                                numberPlate + "/" + USER_UID + "/" + subRoute.getSubrouteStart() +
+                                                "/" + subRoute.getSubrouteFinish() + "/" + TOKEN);
+                                        //stkBuilder.setCallBackURL(CALLBACK_URL);
 
-                        //SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFERENCES,
-                                //Context.MODE_PRIVATE);
-                        //String token = sharedPreferences.getString("InstanceID", "");
-                        //stkBuilder.setFirebaseRegID(token);
-                        STKPush push = stkBuilder.build();
-                        Toast.makeText(getContext(), push.getCallBackURL(), Toast.LENGTH_LONG).show();
-                        Mpesa.getInstance().pay(getContext(), push);
+                                        //SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFERENCES,
+                                        //Context.MODE_PRIVATE);
+                                        //String token = sharedPreferences.getString("InstanceID", "");
+                                        //stkBuilder.setFirebaseRegID(token);
+                                        STKPush push = stkBuilder.build();
+                                        //Toast.makeText(getContext(), TOKEN, Toast.LENGTH_LONG).show();
+                                        Mpesa.getInstance().pay(getContext(), push);
+                                    }
+                                });
                     }
                 });
                 //adapter.setmDataModelsList(mDataModels);
@@ -210,6 +254,21 @@ public class ViewVehicleFareChartFragment extends Fragment {
                 recyclerView.setLayoutManager(lean);
                 recyclerView.setAdapter(adapter);
 
+                /*mRegBroadRec = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        if(intent.getAction().equals(NOTIFICATION)) {
+                            String title = intent.getStringExtra("title");
+                            String body = intent.getStringExtra("body");
+                            int code = intent.getIntExtra("code", 0);
+                            showDialog(title, body, code);
+                        }
+                    }
+                };
+
+                LocalBroadcastManager.getInstance(getContext()).registerReceiver(mRegBroadRec,
+                        new IntentFilter(NOTIFICATION));*/
+
             }
 
             @Override
@@ -217,8 +276,99 @@ public class ViewVehicleFareChartFragment extends Fragment {
 
             }
         });
+    }
 
 
+    private void showDialog(String title, String message, int code) {
+        //Push to db
+        /*String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference dr = FirebaseDatabase.getInstance().getReference().child("Payments/" +
+                userUid);
+        dr.push().setValue(message);*/
+
+        AlertDialog.Builder successBuilder = new AlertDialog.Builder(getContext());
+        successBuilder.setTitle(title);
+        successBuilder.setCancelable(false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.success_dialog, null);
+        TextView textMessage = view.findViewById(R.id.message);
+        ImageView imageView = view.findViewById(R.id.success);
+        if (code != 0) {
+            imageView.setVisibility(View.GONE);
+        }
+        textMessage.setText(message);
+        successBuilder.setView(view);
+        successBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        successBuilder.setNeutralButton("Write Review", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                showReviewDialog();
+            }
+        });
+        AlertDialog successDialog = successBuilder.create();
+        successDialog.show();
+    }
+
+    private void showReviewDialog() {
+        AlertDialog.Builder reviewBuilder = new AlertDialog.Builder(getContext());
+        reviewBuilder.setTitle("Review");
+        reviewBuilder.setCancelable(false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.review_dialog, null);
+        final RatingBar ratingBar = view.findViewById(R.id.reviewRating);
+        final EditText reviewText = view.findViewById(R.id.reviewText);
+        reviewBuilder.setView(view);
+        //final int stars = ratingBar.getNumStars();
+        reviewBuilder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(ratingBar.getRating() == 0 || reviewText.getText().toString() == null) {
+                    Toast.makeText(getContext(), "Please fill in all the fields!",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    dialogInterface.dismiss();
+                    Review review = new Review();
+                    review.setStars(ratingBar.getRating());
+                    review.setText(reviewText.getText().toString());
+                    review.setUserUid(FirebaseAuth.getInstance().getUid());
+                    review.setLicencePlate(LICENCE_PLATE);
+                    review.setTimeStamp(TimeUtil.getTimestamp());
+                    FirebaseDatabase.getInstance().getReference().child("Reviews").push().setValue(review);
+                    Toast.makeText(getContext(), "Review sent!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        reviewBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog reviewDialog = reviewBuilder.create();
+        reviewDialog.show();
+    }
+
+    /*@Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mRegBroadRec);
+        super.onPause();
+    }*/
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mRegBroadRec);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mRegBroadRec,
+                new IntentFilter(NOTIFICATION));
     }
 
     @Override
@@ -230,4 +380,23 @@ public class ViewVehicleFareChartFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
+    /*@Override
+    public void showSuccessDialog(String title, String body) {
+        AlertDialog.Builder successBuilder = new AlertDialog.Builder(getContext());
+        successBuilder.setTitle(title);
+        successBuilder.setCancelable(false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.success_dialog, null);
+        TextView textMessage = view.findViewById(R.id.message);
+        textMessage.setText(body);
+        successBuilder.setView(view);
+        successBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog successDialog = successBuilder.create();
+        successDialog.show();
+    }*/
 }

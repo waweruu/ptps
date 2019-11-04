@@ -4,9 +4,11 @@
     <string name="button_sign_out"> Sign Out </string>
     <string name="button_next"> Next </string>
     <string name="button_finish"> Finish </string>
-    <string name="button_passenger_login">Sign in as Passenger / Owner</string>
-    <string name="button_owner_login">Sign in as Owner</string>
-    <string name="button_operator_login">Sign in as Operator</string>
+    <string name="button_passenger_login">Sign in</string>
+    <string name="button_owner_login">Sign in</string>
+    <string name="button_operator_login">Sign up as Operator</string>
+    <string name="button_start_trip">Start Trip</string>
+    <string name="button_Stop_trip">Stop Trip</string>
 
     <string name="label_user_type">User Type</string>
     <string name="label_first_name">First Name</string>
@@ -23,6 +25,15 @@
     <string name="label_driver_conductor_details">Driver/Conductor Details</string>
     <string name="label_route_info">Route Info</string>
     <string name="label_subroutes">SubRoutes</string>
+    <string name="label_ratingBar">Rate your experience</string>
+    <string name="label_reviewText">Please write a review max. 250 letters</string>
+    <string name="label_receipt">XXXXXXXXXX</string>
+    <string name="label_start">Start</string>
+    <string name="label_finish">Finish</string>
+    <string name="label_currency">Ksh.</string>
+    <string name="label_amount">000</string>
+    <string name="label_date">XX/XX/XX</string>
+    <string name="label_time">XX:XX:XX</string>
 
     <string name="title_activity_landing_two">LandingTwoActivity</string>
     <string name="title_conductor_details">Conductor Details</string>
@@ -38,5 +49,10 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="hint_write_review">Write a review</string>
+
+    <string name="menuItem_home">Home</string>
+    <string name="menuItem_passenger_payments">Passenger Payments</string>
+    <string name="menuItem_account">Account</string>
 
 </resources>
