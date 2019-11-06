@@ -18,6 +18,7 @@ import com.isproject.ptps.DataModelsAdapter;
 import com.isproject.ptps.DataObject;
 import com.isproject.ptps.NumberPlate;
 import com.isproject.ptps.R;
+import com.isproject.ptps.Review;
 
 import java.util.ArrayList;
 
@@ -29,9 +30,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PassengerReviewsFragment extends Fragment {
+public class PassengerReviewsFragment extends Fragment implements ChooseLicencePlateFragment.OnLicencePlateClicked {
 
-    private RecyclerView recyclerView;
+    //implementation one
+    /*private RecyclerView recyclerView;
     private ArrayList<DataObject> mDataObjects = new ArrayList<>();
 
     public PassengerReviewsFragment() {
@@ -85,6 +87,93 @@ public class PassengerReviewsFragment extends Fragment {
                         ft.commit();
                     }
                 });
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }*/
+
+    //implementation two
+    Fragment fragment = new ChooseLicencePlateFragment();
+    RecyclerView recyclerView;
+    ArrayList<DataObject> mDataObjects = new ArrayList<>();
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_reviews, container, false);
+        recyclerView = view.findViewById(R.id.reviewsSpecRecycler);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        addLicencePlateFragment();
+    }
+
+    private void addLicencePlateFragment() {
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.frameLayout, fragment);
+        ft.addToBackStack("ChoosePlateToReview");
+        ft.commit();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void sendSelectedLicencePlate(String licencePlate) {
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        //Toast.makeText(getContext(), "This " + licencePlate, Toast.LENGTH_LONG).show();
+        ft.remove(fragment);
+        ft.commit();
+
+        //showing reviews
+        loadReviews(licencePlate);
+    }
+
+    private void loadReviews(String licencePlate) {
+        Query query = FirebaseDatabase.getInstance().getReference().child("Reviews")
+                .orderByChild("licencePlate").equalTo(licencePlate);
+
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                //if(dataSnapshot.exists()) Toast.makeText(getContext(), "No Daa!",
+                //Toast.LENGTH_SHORT).show();
+                Review review = dataSnapshot.getValue(Review.class);
+                Toast.makeText(getContext(), review.getTimeStamp(), Toast.LENGTH_SHORT).show();
+                mDataObjects.add(review);
+
+                LinearLayoutManager lean = new LinearLayoutManager(getContext());
+                lean.setOrientation(RecyclerView.VERTICAL);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(lean);
+                DataModelsAdapter adapter = new DataModelsAdapter(mDataObjects, null, getContext());
                 recyclerView.setAdapter(adapter);
             }
 
