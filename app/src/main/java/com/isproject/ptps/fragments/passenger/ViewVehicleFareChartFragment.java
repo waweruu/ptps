@@ -199,52 +199,69 @@ public class ViewVehicleFareChartFragment extends Fragment {
                 adapter.setmListener(new DataModelsAdapter.DataPasser() {
                     @Override
                     public void passData(final SubRoute subRoute) {
-                        final int amount = Integer.parseInt(subRoute.getSubroutePrice());
-                        String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-                        phoneNumber = phoneNumber.substring(1);
-                        //String phoneNumber = "0712771254";
-                        Toast.makeText(getContext(), phoneNumber, Toast.LENGTH_LONG).show();
 
-                        builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Processing payment");
-                        builder.setCancelable(true);
-                        builder.setMessage("Please wait as your payment is processed.");
-                        alertDialog = builder.create();
+                        //Toast.makeText(context, textPrice.getText(), Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Proceed?");
+                        View viewSubroute = LayoutInflater.from(getContext()).inflate(R.layout.subroute_info, null);
+                        TextView textPrice = viewSubroute.findViewById(R.id.textRoutePrice);
+                        TextView textStart = viewSubroute.findViewById(R.id.textRouteStart);
+                        TextView textFinish = viewSubroute.findViewById(R.id.textRouteFinish);
+                        textPrice.setText(subRoute.getSubroutePrice());
+                        textStart.setText(subRoute.getSubrouteStart());
+                        textFinish.setText(subRoute.getSubrouteFinish());
+                        builder.setView(viewSubroute);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                final int amount = Integer.parseInt(subRoute.getSubroutePrice());
+                                String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+                                phoneNumber = phoneNumber.substring(1);
+                                //String phoneNumber = "0712771254";
+                                Toast.makeText(getContext(), phoneNumber, Toast.LENGTH_LONG).show();
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Processing payment");
+                                builder.setCancelable(false);
+                                builder.setMessage("Please wait as your payment is processed.");
+                                alertDialog = builder.create();
+                                alertDialog.show();
+
+                                String[] keys = licencePlate.split(" ");
+                                final String numberPlate = keys[0] + "_" + keys[1];
+
+                                final String finalPhoneNumber = phoneNumber;
+                                FirebaseInstanceId.getInstance().getInstanceId()
+                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                                if(!task.isSuccessful()) {
+                                                    Log.w(TAG, "getInstanceId failed", task.getException());
+                                                    return;
+                                                }
+                                                TOKEN = task.getResult().getToken();
+                                                STKPush.Builder stkBuilder = new STKPush.Builder(BUSINESS_SHORT_CODE, PASSKEY,
+                                                        amount, BUSINESS_SHORT_CODE, finalPhoneNumber, CALLBACK_URL +
+                                                        numberPlate + "/" + USER_UID + "/" + subRoute.getSubrouteStart() +
+                                                        "/" + subRoute.getSubrouteFinish() + "/" + TOKEN);
+                                                STKPush push = stkBuilder.build();
+                                                Toast.makeText(getContext(), TOKEN, Toast.LENGTH_LONG).show();
+                                                Mpesa.getInstance().pay(getContext(), push);
+                                            }
+                                        });
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.setCancelable(false);
+
+                        AlertDialog alertDialog = builder.create();
                         alertDialog.show();
-                        int i = 0;
-                        while(i < 5) {
-                            i++;
-                            if(i == 5) alertDialog.hide();
-                        }
-
-                        String[] keys = licencePlate.split(" ");
-                        final String numberPlate = keys[0] + "_" + keys[1];
-
-                        final String finalPhoneNumber = phoneNumber;
-                        FirebaseInstanceId.getInstance().getInstanceId()
-                                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                        if(!task.isSuccessful()) {
-                                            Log.w(TAG, "getInstanceId failed", task.getException());
-                                            return;
-                                        }
-                                        TOKEN = task.getResult().getToken();
-                                        STKPush.Builder stkBuilder = new STKPush.Builder(BUSINESS_SHORT_CODE, PASSKEY,
-                                                amount, BUSINESS_SHORT_CODE, finalPhoneNumber, CALLBACK_URL +
-                                                numberPlate + "/" + USER_UID + "/" + subRoute.getSubrouteStart() +
-                                                "/" + subRoute.getSubrouteFinish() + "/" + TOKEN);
-                                        //stkBuilder.setCallBackURL(CALLBACK_URL);
-
-                                        //SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFERENCES,
-                                        //Context.MODE_PRIVATE);
-                                        //String token = sharedPreferences.getString("InstanceID", "");
-                                        //stkBuilder.setFirebaseRegID(token);
-                                        STKPush push = stkBuilder.build();
-                                        //Toast.makeText(getContext(), TOKEN, Toast.LENGTH_LONG).show();
-                                        Mpesa.getInstance().pay(getContext(), push);
-                                    }
-                                });
                     }
                 });
                 //adapter.setmDataModelsList(mDataModels);
@@ -285,7 +302,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
         DatabaseReference dr = FirebaseDatabase.getInstance().getReference().child("Payments/" +
                 userUid);
         dr.push().setValue(message);*/
-
+        alertDialog.hide();
         AlertDialog.Builder successBuilder = new AlertDialog.Builder(getContext());
         successBuilder.setTitle(title);
         successBuilder.setCancelable(false);

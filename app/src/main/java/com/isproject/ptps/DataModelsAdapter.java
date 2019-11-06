@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,9 +19,18 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
     private ArrayList<SubRoute> mSubRoutesList;
     private Context context;
     private DataPasser mListener;
+    private OnNumberPlateClicked mCallback;
 
     public interface DataPasser {
         void passData(SubRoute subRoute);
+    }
+
+    public interface OnNumberPlateClicked {
+        void sendNumberPlate(String numberPlate);
+    }
+
+    public void setmCallback(OnNumberPlateClicked mCallback) {
+        this.mCallback = mCallback;
     }
 
     public void setmListener(DataPasser mListener) {
@@ -58,7 +68,15 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
             case DataModels.MODEL_PAYMENT_RECEIPTS:
                 itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.payment_receipt, parent, false);
-                return  new PaymentReceiptViewHolder(itemView);
+                return new PaymentReceiptViewHolder(itemView);
+            case DataModels.MODEL_NUMBER_PLATE:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.owner_vehicle_plate, parent, false);
+                return new NumberPlateViewHolder(itemView);
+            case DataModels.MODEL_REVIEW:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.view_review_layout, parent, false);
+                return new ReviewViewHolder(itemView);
             default:
                 itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.operator_info, parent, false);
@@ -116,6 +134,20 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
                         notifyItemChanged(position);
                     }
                 });
+                break;
+            case DataModels.MODEL_NUMBER_PLATE:
+                ((NumberPlateViewHolder) holder).bindView(position);
+                final NumberPlate plate = (NumberPlate) mDataModelsList.get(position);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String numberPlate = plate.getVehicle();
+                        mCallback.sendNumberPlate(numberPlate);
+                    }
+                });
+                break;
+            case DataModels.MODEL_REVIEW:
+                ((ReviewViewHolder) holder).bindView(position);
                 break;
             case DataModels.MODEL_PAYMENT_RECEIPTS:
                 ((PaymentReceiptViewHolder) holder).bindView(position);
@@ -296,6 +328,56 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
             licencePlate.setText(paymentReceipt.getLicencePlate());
             transactionDate.setText(date2);
             transactionTime.setText(time2);
+        }
+    }
+
+    public class NumberPlateViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView numberPlate;
+
+        public NumberPlateViewHolder(@NonNull View itemView) {
+            super(itemView);
+            numberPlate = itemView.findViewById(R.id.textNumberPlate);
+        }
+
+        public void bindView(int position) {
+            NumberPlate plate = (NumberPlate) mDataModelsList.get(position);
+
+            numberPlate.setText(plate.getVehicle());
+        }
+    }
+
+    public class ReviewViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView review, licencePlate, date, time;
+        private RatingBar rating;
+
+        public ReviewViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            rating = itemView.findViewById(R.id.viewReviewRating);
+            review = itemView.findViewById(R.id.viewReviewText);
+            licencePlate = itemView.findViewById(R.id.viewReviewPlate);
+            date = itemView.findViewById(R.id.viewReviewDate);
+            time = itemView.findViewById(R.id.viewReviewTime);
+        }
+
+        public void bindView(int position) {
+            Review review1 = (Review) mDataModelsList.get(position);
+
+            rating.setRating(review1.getStars());
+            review.setText(review1.getText());
+            licencePlate.setText(review1.getLicencePlate());
+
+            String dateAndTime = String.valueOf(review1.getTimeStamp());
+            String date1 = dateAndTime.substring(0, 8);
+            String time1 = dateAndTime.substring(8);
+
+            String date2 = date1.substring(6) + "/" + date1.substring(4, 6) + "/" + date1.substring(2, 4);
+            String time2 = time1.substring(0, 2) + ":" + time1.substring(2, 4) + ":" + time1.substring(4);
+
+            date.setText(date2);
+            time.setText(time2);
         }
     }
 

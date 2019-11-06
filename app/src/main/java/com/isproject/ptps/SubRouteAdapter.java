@@ -49,7 +49,6 @@ public class SubRouteAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ((SubRouteViewHolder) holder).bindView(position);
-        //TODO: Implement onClickListener
         View view = holder.itemView;
         TextView textPrice = view.findViewById(R.id.textRoutePrice);
         TextView textStart = view.findViewById(R.id.textRouteStart);
@@ -63,34 +62,7 @@ public class SubRouteAdapter extends RecyclerView.Adapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(context, textPrice.getText(), Toast.LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Proceed?");
-                View viewSubroute = LayoutInflater.from(context).inflate(R.layout.subroute_info, null);
-                TextView textPrice = viewSubroute.findViewById(R.id.textRoutePrice);
-                TextView textStart = viewSubroute.findViewById(R.id.textRouteStart);
-                TextView textFinish = viewSubroute.findViewById(R.id.textRouteFinish);
-                textPrice.setText(subRoute.getSubroutePrice());
-                textStart.setText(subRoute.getSubrouteStart());
-                textFinish.setText(subRoute.getSubrouteFinish());
-                builder.setView(viewSubroute);
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        onSubRouteSelectedListener.paymentDetails(subRoute);
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setCancelable(false);
-
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                onSubRouteSelectedListener.paymentDetails(subRoute);
             }
         });
     }

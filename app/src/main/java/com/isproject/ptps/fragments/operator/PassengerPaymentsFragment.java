@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +41,7 @@ public class PassengerPaymentsFragment extends Fragment {
     private ArrayList<DataObject> mDataModels = new ArrayList<>();
     private long startTime, stopTime;
     private DataModelsAdapter startAdapter, stopAdapter;
+    private String licencePlate;
 
     public PassengerPaymentsFragment() {
         // Required empty public constructor
@@ -75,15 +77,17 @@ public class PassengerPaymentsFragment extends Fragment {
                 Toast.makeText(getContext(), "Starting trip...", Toast.LENGTH_LONG).show();
                 startTime = Long.parseLong(TimeUtil.getTimestamp());
                 //Query query = FirebaseDatabase.getInstance().getReference().child("Payments").child("klCPVBLgO5eAjFxeM4RACJGmBQq2");
-                Query query = FirebaseDatabase.getInstance().getReference().child("Payments").orderByChild("transactionDate").startAt(startTime);
+                getLicencePlate();
+                Query query = FirebaseDatabase.getInstance().getReference().child("Payments")
+                        .orderByChild("transactionDate").startAt(startTime);
                 //DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Payments");
 
                 query.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Toast.makeText(getContext(), "No Daa!", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getContext(), "No Daa!", Toast.LENGTH_LONG).show();
                         PaymentReceipt receipt = dataSnapshot.getValue(PaymentReceipt.class);
-                        mDataModels.add(receipt);
+                        if(receipt.getLicencePlate().equals(licencePlate)) mDataModels.add(receipt);
                         startAdapter = new DataModelsAdapter(mDataModels, null, getContext());
                         recyclerView.setAdapter(startAdapter);
                     }
@@ -120,8 +124,9 @@ public class PassengerPaymentsFragment extends Fragment {
                 mDataModels.clear();
                 startAdapter = null;
                 Trip trip = new Trip(startTime, stopTime);
+                getLicencePlate();
                 //TODO: Have to find a way to get licence plate
-                FirebaseDatabase.getInstance().getReference().child("Vehicles/KDB 017B/Trips").push().setValue(trip);
+                FirebaseDatabase.getInstance().getReference().child("Vehicles/" + licencePlate + "/Trips").push().setValue(trip);
                 Query query = FirebaseDatabase.getInstance().getReference().child("Payments")
                         .orderByChild("transactionDate").startAt(startTime).endAt(stopTime);
                 query.addChildEventListener(new ChildEventListener() {
@@ -159,10 +164,26 @@ public class PassengerPaymentsFragment extends Fragment {
         });
     }
 
+    public void getLicencePlate() {
+        String userUid = FirebaseAuth.getInstance().getUid();
+        Query query = FirebaseDatabase.getInstance().getReference().child("Users").child(userUid)
+                .child("vehicle");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                licencePlate = dataSnapshot.getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @Override

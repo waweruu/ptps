@@ -96,6 +96,8 @@ public class SignInOperatorFragment extends Fragment {
                                 op.setPhoneNumber(dataSnapshot.getValue(Operator.class).getPhoneNumber());
 
                                 databaseReference.child("Users").child(userUid).setValue(op);
+                                databaseReference.child("Users").child(userUid).child("vehicle")
+                                        .setValue(bundle.getString("LICENCE_PLATE"));
 
                                 //todo: change to landingtwoactivity
                                 Intent intent = new Intent(getContext(), LandingTwoActivity.class);

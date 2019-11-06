@@ -100,7 +100,6 @@ public class WelcomeActivity extends AppCompatActivity implements ProvideDetails
                         Intent intent = new Intent(WelcomeActivity.this, InputDetailsActivity.class);
                         startActivity(intent);
                     } else {
-                        //todo: change back to landingtwoactivity
                         Intent intent = new Intent(WelcomeActivity.this, LandingTwoActivity.class);
                         startActivity(intent);
                     }

@@ -29,12 +29,11 @@
 
         <Button
             android:id="@+id/buttonOperatorSignIn"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/primaryColor"
             android:padding="5dp"
             android:text="@string/button_operator_login"
-            android:textColor="@color/textColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -43,12 +42,11 @@
 
         <Button
             android:id="@+id/buttonPassengerSignIn"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/primaryColor"
             android:padding="5dp"
             android:text="@string/button_passenger_login"
-            android:textColor="@color/textColor"
             app:layout_constraintBottom_toTopOf="@+id/buttonOperatorSignIn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

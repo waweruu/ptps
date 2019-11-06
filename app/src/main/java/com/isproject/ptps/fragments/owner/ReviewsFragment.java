@@ -1,8 +1,17 @@
 package com.isproject.ptps.fragments.owner;
 
+import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,27 +23,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.isproject.ptps.DataModels;
 import com.isproject.ptps.DataModelsAdapter;
 import com.isproject.ptps.DataObject;
-import com.isproject.ptps.NumberPlate;
 import com.isproject.ptps.R;
+import com.isproject.ptps.Review;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-public class PassengerReviewsFragment extends Fragment {
+public class ReviewsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ArrayList<DataObject> mDataObjects = new ArrayList<>();
 
-    public PassengerReviewsFragment() {
+    public ReviewsFragment() {
         // Required empty public constructor
     }
 
@@ -47,12 +49,8 @@ public class PassengerReviewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_passenger_reviews, container, false);
-        recyclerView = view.findViewById(R.id.licencePlatesRecycler);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager lean = new LinearLayoutManager(getContext());
-        lean.setOrientation(RecyclerView.VERTICAL);
-        recyclerView.setLayoutManager(lean);
+        View view = inflater.inflate(R.layout.fragment_reviews, container, false);
+        recyclerView  = view.findViewById(R.id.reviewsSpecRecycler);
         return view;
     }
 
@@ -60,31 +58,28 @@ public class PassengerReviewsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String userUid = FirebaseAuth.getInstance().getUid();
-        Query query = FirebaseDatabase.getInstance().getReference().child("Users").child(userUid)
-                .child("vehicles");
+        Bundle bundle = this.getArguments();
+        String licencePlate = bundle.getString("LICENCE_PLATE");
+
+        //Toast.makeText(getContext(), licencePlate, Toast.LENGTH_SHORT).show();
+
+        Query query = FirebaseDatabase.getInstance().getReference().child("Reviews")
+                .orderByChild("licencePlate").equalTo(licencePlate);
+
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                NumberPlate plate = dataSnapshot.getValue(NumberPlate.class);
-                mDataObjects.add(plate);
+                //if(dataSnapshot.exists()) Toast.makeText(getContext(), "No Daa!",
+                //Toast.LENGTH_SHORT).show();
+                Review review = dataSnapshot.getValue(Review.class);
+                Toast.makeText(getContext(), review.getTimeStamp(), Toast.LENGTH_SHORT).show();
+                mDataObjects.add(review);
 
+                LinearLayoutManager lean = new LinearLayoutManager(getContext());
+                lean.setOrientation(RecyclerView.VERTICAL);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(lean);
                 DataModelsAdapter adapter = new DataModelsAdapter(mDataObjects, null, getContext());
-                adapter.setmCallback(new DataModelsAdapter.OnNumberPlateClicked() {
-                    @Override
-                    public void sendNumberPlate(String numberPlate) {
-                        //Toast.makeText(getContext(), "" + numberPlate + " clicked!", Toast.LENGTH_SHORT).show();
-
-                        Fragment fragment = new ReviewsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("LICENCE_PLATE", numberPlate);
-                        fragment.setArguments(bundle);
-                        FragmentManager fm = getFragmentManager();
-                        FragmentTransaction ft = fm.beginTransaction();
-                        ft.replace(R.id.fl_content, fragment);
-                        ft.commit();
-                    }
-                });
                 recyclerView.setAdapter(adapter);
             }
 

@@ -1,6 +1,6 @@
 package com.isproject.ptps;
 
-public class Review {
+public class Review extends DataObject implements DataModels {
 
     private float stars;
     private String text;
@@ -58,5 +58,10 @@ public class Review {
 
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    @Override
+    public int getModelType() {
+        return DataModels.MODEL_REVIEW;
     }
 }

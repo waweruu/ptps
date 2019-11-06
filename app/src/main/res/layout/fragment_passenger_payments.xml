@@ -10,19 +10,22 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="horizontal">
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/buttonStartTrip"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/button_start_trip" />
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/buttonStopTrip"
+            android:gravity="center"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_Stop_trip" />

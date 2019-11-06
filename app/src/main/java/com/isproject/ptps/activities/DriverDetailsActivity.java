@@ -65,4 +65,11 @@ public class DriverDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        //Disabled back button
+        Utilities.showWarningDialog(this);
+    }
 }

@@ -104,14 +104,32 @@ public class LandingTwoActivity extends AppCompatActivity
                             navigationView.inflateMenu(R.menu.passenger_drawer_view);
                             setupPassengerDrawerContent(navigationView);
                             setTitle(R.string.title_passenger_module);
+                            //navigationView.setCheckedItem(R.id.nav_passenger_home_frag);
+                            Fragment fragment = new PassengerHomeFragment();
+                            FragmentManager fm = getSupportFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.fl_content, fragment);
+                            ft.commit();
                         } else if (userType.equals("Owner")) {
                             navigationView.inflateMenu(R.menu.owner_drawer_view);
                             setupOwnerDrawerContent(navigationView);
                             setTitle(R.string.title_owner_module);
+                            //navigationView.setCheckedItem(R.id.nav_owner_home_frag);
+                            Fragment fragment = new OwnerHomeFragment();
+                            FragmentManager fm = getSupportFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.fl_content, fragment);
+                            ft.commit();
                         } else if (userType.equals("Conductor") || userType.equals("Driver")) {
                             navigationView.inflateMenu(R.menu.operator_drawer_view);
                             setupOperatorDrawerContent(navigationView);
                             setTitle(R.string.title_operator_module);
+                            //navigationView.setCheckedItem(R.id.nav_operator_home_frag);
+                            Fragment fragment = new OperatorHomeFragment();
+                            FragmentManager fm = getSupportFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.fl_content, fragment);
+                            ft.commit();
                         }
 
                         //Testing
