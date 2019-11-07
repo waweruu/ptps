@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CREATE FARECHART"
-            android:textColor="@color/primaryColor"
+            android:textColor="@color/primaryLightColor"
             android:textSize="20dp"/>
 
     </LinearLayout>
@@ -68,6 +68,21 @@
         android:background="@color/primaryDarkColor"
         android:text="CREATE CHART"
         android:textColor="@color/primaryTextColor" />
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:layout_marginTop="110dp">-->
+<!--        <Button-->
+<!--            android:id="@+id/buttonBack"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="BACK"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:background="@color/primaryDarkColor"-->
+<!--            android:textColor="@color/primaryTextColor"/>-->
+<!--    </LinearLayout>-->
 
 
 

@@ -23,6 +23,8 @@
     <string name="label_driver_conductor_details">Driver/Conductor Details</string>
     <string name="label_route_info">Route Info</string>
     <string name="label_subroutes">SubRoutes</string>
+    <string name="label_vehicle_licence">Vehicle Licence Plate</string>
+    <string name="label_select_vehicles">Select Vehicle</string>
 
     <string name="title_activity_landing_two">LandingTwoActivity</string>
     <string name="title_conductor_details">Conductor Details</string>

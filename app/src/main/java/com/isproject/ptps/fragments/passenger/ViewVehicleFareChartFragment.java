@@ -74,7 +74,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
     ArrayList<SubRoute> mSubRoutes;
     RecyclerView recyclerView;
     ProgressBar progressBar;
-    AlertDialog.Builder builder;
+    //AlertDialog.Builder builder;
     AlertDialog alertDialog;
 
     public static final String BUSINESS_SHORT_CODE = "174379";
@@ -172,35 +172,56 @@ public class ViewVehicleFareChartFragment extends Fragment {
                 DataModelsAdapter adapter = new DataModelsAdapter(mDataModels, mSubRoutes, getContext());
                 adapter.setmListener(new DataModelsAdapter.DataPasser() {
                     @Override
-                    public void passData(SubRoute subRoute) {
-                        int amount = Integer.parseInt(subRoute.getSubroutePrice());
-                        String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-                        phoneNumber = phoneNumber.substring(1);
-                        //String phoneNumber = "0712771254";
-                        Toast.makeText(getContext(), phoneNumber, Toast.LENGTH_LONG).show();
+                    public void passData(final SubRoute subRoute) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Proceed?");
+                        View viewSubroute = LayoutInflater.from(getContext()).inflate(R.layout.subroute_info, null);
+                        TextView textPrice = viewSubroute.findViewById(R.id.textRoutePrice);
+                        TextView textStart = viewSubroute.findViewById(R.id.textRouteStart);
+                        TextView textFinish = viewSubroute.findViewById(R.id.textRouteFinish);
+                        textPrice.setText(subRoute.getSubroutePrice());
+                        textStart.setText(subRoute.getSubrouteStart());
+                        textFinish.setText(subRoute.getSubrouteFinish());
+                        builder.setView(viewSubroute);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                int amount = Integer.parseInt(subRoute.getSubroutePrice());
+                                String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+                                phoneNumber = phoneNumber.substring(1);
+                                //String phoneNumber = "0712771254";
+                                Toast.makeText(getContext(), phoneNumber, Toast.LENGTH_LONG).show();
 
-                        builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Processing payment");
-                        builder.setCancelable(true);
-                        alertDialog = builder.create();
+                                AlertDialog.Builder builder_two = new AlertDialog.Builder(getContext());
+                                builder_two.setTitle("Processing payment");
+                                builder_two.setCancelable(true);
+                                alertDialog = builder_two.create();
+                                alertDialog.show();
+
+                                String[] keys = licencePlate.split(" ");
+                                String numberPlate = keys[0] + "_" + keys[1];
+
+                                STKPush.Builder stkBuilder = new STKPush.Builder(BUSINESS_SHORT_CODE, PASSKEY,
+                                        amount, BUSINESS_SHORT_CODE, phoneNumber, CALLBACK_URL +
+                                        numberPlate + "/" + USER_UID + "/" + subRoute.getSubrouteStart() +
+                                        "/" + subRoute.getSubrouteFinish());
+                                STKPush push = stkBuilder.build();
+                                Toast.makeText(getContext(), push.getCallBackURL(), Toast.LENGTH_LONG).show();
+                                Mpesa.getInstance().pay(getContext(), push);
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.setCancelable(false);
+
+                        AlertDialog alertDialog = builder.create();
                         alertDialog.show();
 
-                        String[] keys = licencePlate.split(" ");
-                        String numberPlate = keys[0] + "_" + keys[1];
-
-                        STKPush.Builder stkBuilder = new STKPush.Builder(BUSINESS_SHORT_CODE, PASSKEY,
-                                amount, BUSINESS_SHORT_CODE, phoneNumber, CALLBACK_URL +
-                                numberPlate + "/" + USER_UID + "/" + subRoute.getSubrouteStart() +
-                                "/" + subRoute.getSubrouteFinish());
-                        //stkBuilder.setCallBackURL(CALLBACK_URL);
-
-                        //SharedPreferences sharedPreferences = getContext().getSharedPreferences(SHARED_PREFERENCES,
-                                //Context.MODE_PRIVATE);
-                        //String token = sharedPreferences.getString("InstanceID", "");
-                        //stkBuilder.setFirebaseRegID(token);
-                        STKPush push = stkBuilder.build();
-                        Toast.makeText(getContext(), push.getCallBackURL(), Toast.LENGTH_LONG).show();
-                        Mpesa.getInstance().pay(getContext(), push);
                     }
                 });
                 //adapter.setmDataModelsList(mDataModels);

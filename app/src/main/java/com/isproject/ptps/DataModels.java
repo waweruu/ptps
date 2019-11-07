@@ -6,6 +6,9 @@ public interface DataModels {
     int MODEL_FARE_CHART = 103;
     int MODEL_SUBROUTES = 104;
     int MODEL_LIST = 105;
+    int MODEL_PAYMENT_RECEIPTS = 106;
+    int MODEL_OWNER_VEHICLES=107;
+    int MODEL_OWNER_PAYMENTS=108;
 
     int getModelType();
 }

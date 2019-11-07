@@ -1,5 +1,7 @@
 package com.isproject.ptps.fragments.owner;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +19,15 @@ import com.isproject.ptps.FareChart;
 import com.isproject.ptps.R;
 import com.isproject.ptps.SubRoute;
 import com.isproject.ptps.SubRoutesList;
+import com.isproject.ptps.fragments.passenger.ViewVehicleFareChartFragment;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +41,9 @@ public class ViewFareChartFragment extends Fragment {
     SubRoutesList list = new SubRoutesList();
     FareChart fareChart = new FareChart();
     //SubRoute subRoute = new SubRoute();
+    String routeStart;
+    String routeFinish;
+    String routePrice;
 
     public ViewFareChartFragment() {
         // Required empty public constructor
@@ -62,25 +70,16 @@ public class ViewFareChartFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         final String licencePlate = bundle.getString("LICENCE PLATE");
+        routeStart = bundle.getString("ROUTE_NUMBER");
+        routeFinish = bundle.getString("ROUTE_START");
+        routePrice = bundle.getString("ROUTE_FINISH");
 
         String userUid = FirebaseAuth.getInstance().getUid();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Vehicles");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //FareChart fareChart = new FareChart();
-                /*fareChart.setRouteNumber(dataSnapshot.child(licencePlate).child("FareChart")
-                        .getValue(FareChart.class).getRouteNumber());
-                fareChart.setRouteStart(dataSnapshot.child(licencePlate).child("FareChart")
-                        .getValue(FareChart.class).getRouteStart());
-                fareChart.setRouteFinish(dataSnapshot.child(licencePlate).child("FareChart")
-                        .getValue(FareChart.class).getRouteFinish());*/
-                /*fareChart.setRouteNumber(dataSnapshot.child(licencePlate).child("FareChart/routeNumber")
-                        .getValue().toString());
-                fareChart.setRouteStart(dataSnapshot.child(licencePlate).child("FareChart/routeStart")
-                        .getValue().toString());
-                fareChart.setRouteFinish(dataSnapshot.child(licencePlate).child("FareChart/routeFinish")
-                        .getValue().toString());*/
+
 
                 fareChart = dataSnapshot.child(licencePlate).child("FareChart").getValue(FareChart.class);
 
@@ -97,7 +96,47 @@ public class ViewFareChartFragment extends Fragment {
 
                 mDataModels.add(list);
 
+
                 DataModelsAdapter adapter = new DataModelsAdapter(mDataModels, mSubRoutes, getContext());
+                adapter.setmListener(new DataModelsAdapter.DataPasser() {
+                    @Override
+                    public void passData(final SubRoute subRoute) {
+                        AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+                        builder.setTitle("Update Sub Route");
+                        builder.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                                Fragment fragment = new UpdateChartFragment();
+                                FragmentManager fm = getFragmentManager();
+                                FragmentTransaction ft = fm.beginTransaction();
+                                ft.replace(R.id.fl_content, fragment);
+                                ft.commit();
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("LICENCE_PLATE", licencePlate);
+                                bundle.putString("START", subRoute.getSubrouteStart());
+                                bundle.putString("FINISH", subRoute.getSubrouteFinish());
+                                bundle.putString("PRICE", subRoute.getSubroutePrice());
+                                bundle.putString("ROUTE_NUMBER", routeStart);
+                                bundle.putString("ROUTE_START", routeFinish);
+                                bundle.putString("ROUTE_FINISH", routePrice);
+                                fragment.setArguments(bundle);
+                            }
+                        });
+                        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.setCancelable(false);
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+                });
                 //adapter.setmDataModelsList(mDataModels);
                 LinearLayoutManager lean = new LinearLayoutManager(getContext());
                 lean.setOrientation(RecyclerView.VERTICAL);

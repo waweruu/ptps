@@ -1,6 +1,10 @@
 package com.isproject.ptps;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +13,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.isproject.ptps.fragments.owner.EditChartFragment;
+import com.isproject.ptps.fragments.owner.FareChartFragment;
 
 public class DataModelsAdapter extends RecyclerView.Adapter {
 
@@ -18,6 +28,24 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
     private ArrayList<SubRoute> mSubRoutesList;
     Context context;
     DataPasser mListener;
+    OnLicencePlateSelectedListener mCallbacks;
+
+    public void setmCallbacks(OnLicencePlateSelectedListener mCallbacks) {
+        this.mCallbacks = mCallbacks;
+    }
+
+    public interface OnLicencePlateSelectedListener {
+        void onPositiveClick();
+    }
+
+//    public DataModelsAdapter(OnLicencePlateSelectedListener mCallbacks) {
+//        this.mCallbacks = mCallbacks;
+//    }
+
+    public DataModelsAdapter(ArrayList<? extends DataModels> mDataModelsList, Context context) {
+        this.mDataModelsList = mDataModelsList;
+        this.context = context;
+    }
 
     public interface DataPasser {
         void passData(SubRoute subRoute);
@@ -55,6 +83,17 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
                 itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.subroutes_layout, parent, false);
                 return new SubRoutesListViewHolder(itemView);
+
+
+                case DataModels.MODEL_OWNER_VEHICLES:
+                    itemView=LayoutInflater.from(parent.getContext()).inflate(R.layout.owner_vehicles_display,parent,false);
+                    return new OwnerVehiclesViewHolder(itemView);
+
+
+            case DataModels.MODEL_OWNER_PAYMENTS:
+                itemView=LayoutInflater.from(parent.getContext()).inflate(R.layout.owner_payments,parent,false);
+                return new OwnerPaymentsViewHolder(itemView);
+
             default:
                 itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.operator_info, parent, false);
@@ -112,6 +151,51 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
                         notifyItemChanged(position);
                     }
                 });
+                break;
+
+            case DataModels.MODEL_OWNER_VEHICLES:
+                View view = holder.itemView;
+                ((OwnerVehiclesViewHolder) holder).bindView(position);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setTitle("VIEW VEHICLE FARE CHART");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                               mCallbacks.onPositiveClick();
+
+
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.setCancelable(false);
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+                });
+                break;
+            case DataModels.MODEL_OWNER_PAYMENTS:
+                ((OwnerPaymentsViewHolder)holder).bindView(position);
+                final PaymentReceipt paymentReceipt= (PaymentReceipt) mDataModelsList.get(position);
+                holder.itemView.findViewById(R.id.labelOperatorDetails).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean expanded = paymentReceipt.isExpanded();
+                        paymentReceipt.setExpanded(!expanded);
+                        notifyItemChanged(position);
+                    }
+                });
+
+                break;
 
             /*case DataModels.MODEL_SUBROUTES:
                 ((SubRouteViewHolder) holder).bindView(position);
@@ -223,6 +307,18 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
             textRouteFinish.setText(fareChart.getRouteFinish());
         }
     }
+    public class OwnerVehiclesViewHolder extends RecyclerView.ViewHolder{
+        private TextView textDisplayLicencePlate;
+
+        public OwnerVehiclesViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textDisplayLicencePlate = itemView.findViewById(R.id.textDisplayVehicleLicencePlate);
+        }
+        public void bindView(int position){
+            NumberPlate plate = (NumberPlate) mDataModelsList.get(position);
+            textDisplayLicencePlate.setText(plate.getNumberPlate());
+        }
+    }
 
     public class SubRoutesListViewHolder extends RecyclerView.ViewHolder {
 
@@ -257,26 +353,38 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
         }
     }
 
-    /*public class SubRouteViewHolder extends RecyclerView.ViewHolder {
+    public class OwnerPaymentsViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView subrouteStart, subrouteFinish, subroutePrice;
+        private TextView textDayPayments, textWeekPayments, textMonthPayments;
+        private View subItemDay,subItemWeek,subItemMonth;
 
-
-        public SubRouteViewHolder(@NonNull View itemView) {
+        public OwnerPaymentsViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            subrouteStart = itemView.findViewById(R.id.textRouteStart);
-            subrouteFinish = itemView.findViewById(R.id.textRouteFinish);
-            subroutePrice = itemView.findViewById(R.id.textRoutePrice);
+            textDayPayments=itemView.findViewById(R.id.day_payments_total);
+            textWeekPayments=itemView.findViewById(R.id.week_payments_total);
+            textMonthPayments=itemView.findViewById(R.id.month_payments_total);
+
+            subItemDay=itemView.findViewById(R.id.subItemDayPayments);
+            subItemWeek=itemView.findViewById(R.id.subItemWeekPayments);
+            subItemMonth=itemView.findViewById(R.id.subItemMonthPayments);
+
         }
+
 
         public void bindView(int position) {
-            SubRoute subRoute = (SubRoute) mDataModelsList.get(position);
+            PaymentReceipt paymentReceipt=(PaymentReceipt) mDataModelsList.get(position);
 
-            subrouteStart.setText(subRoute.getSubrouteStart());
-            subrouteFinish.setText(subRoute.getSubrouteFinish());
-            subroutePrice.setText(subRoute.getSubroutePrice());
+            boolean expanded = paymentReceipt.isExpanded();
+            subItemDay.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            subItemWeek.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            subItemMonth.setVisibility(expanded ? View.VISIBLE : View.GONE);
+
+            textDayPayments.setText((int) paymentReceipt.getAmount());
+            textWeekPayments.setText((int) paymentReceipt.getAmount());
+            textMonthPayments.setText((int) paymentReceipt.getAmount());
         }
-    }*/
+    }
+
 
 }

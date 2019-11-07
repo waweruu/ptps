@@ -90,7 +90,6 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
         FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
 
         String userUID = current_user.getUid();
-        Intent previousIntent =getActivity().getIntent();
 
         DatabaseReference db_ref = firebaseDatabase.getReference().child("Users")
                 .child(userUID).child("vehicles");
@@ -124,9 +123,9 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
             }
         });
 
-        DatabaseReference bdref =firebaseDatabase.getReference().child("Vehicles/" +
+        DatabaseReference dbref =firebaseDatabase.getReference().child("Vehicles/" +
                 licencePlate + "/FareChart");
-        bdref.addListenerForSingleValueEvent(new ValueEventListener() {
+        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {

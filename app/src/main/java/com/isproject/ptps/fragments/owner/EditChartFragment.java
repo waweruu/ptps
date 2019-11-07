@@ -44,6 +44,10 @@ public class EditChartFragment extends Fragment {
     String subrouteFinish;
     String subroutePrice;
 
+    String routeNumber;
+    String routeStart;
+    String routeFinish;
+
 
     public EditChartFragment() {
         // Required empty public constructor
@@ -79,6 +83,7 @@ public class EditChartFragment extends Fragment {
         back=view.findViewById(R.id.buttonBack);
 
 
+
         return view;
     }
 
@@ -87,9 +92,9 @@ public class EditChartFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         final Bundle bundle = this.getArguments();
-        final String routeNumber = bundle.getString("ROUTE_NUMBER");
-        final String routeStart = bundle.getString("ROUTE_START");
-        final String routeFinish = bundle.getString("ROUTE_FINISH");
+        routeNumber= bundle.getString("ROUTE_NUMBER");
+        routeStart = bundle.getString("ROUTE_START");
+        routeFinish = bundle.getString("ROUTE_FINISH");
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         reff = firebaseDatabase.getReference();
@@ -315,6 +320,9 @@ public class EditChartFragment extends Fragment {
 
         Bundle bundle = new Bundle();
         bundle.putString("LICENCE PLATE", licencePlate);
+        bundle.putString("ROUTE_NUMBER",routeNumber );
+        bundle.putString("ROUTE_START", routeStart);
+        bundle.putString("ROUTE_FINISH", routeFinish);
         fragment.setArguments(bundle);
 
         ft.replace(R.id.fl_content, fragment);

@@ -116,6 +116,7 @@ public class VehicleDetailsActivity extends AppCompatActivity {
 
                     databaseReference.child("Vehicles").child(licencePlate)
                             .child("Vehicle Details").setValue(vehicle);
+                    databaseReference.child("Users").child(userUID).child("vehicles").push().setValue(licencePlate);
 
                     Intent in = new Intent(VehicleDetailsActivity.this, DriverDetailsActivity.class);
                     in.putExtra("LICENCE_PLATE", licencePlate);
