@@ -9,12 +9,14 @@ public class PaymentReceipt extends DataObject implements DataModels {
     private long phoneNumber;
     private String start;
     private long transactionDate;
+
     private boolean isExpanded;
 
     public PaymentReceipt() {
     }
 
-    public PaymentReceipt(long amount, String finish, String licencePlate, String mpesaReceiptNumber, long phoneNumber, String start, long transactionDate, boolean isExpanded) {
+    public PaymentReceipt(long amount, String finish, String licencePlate, String mpesaReceiptNumber,
+                          long phoneNumber, String start, long transactionDate) {
         this.amount = amount;
         this.finish = finish;
         this.licencePlate = licencePlate;
@@ -22,7 +24,6 @@ public class PaymentReceipt extends DataObject implements DataModels {
         this.phoneNumber = phoneNumber;
         this.start = start;
         this.transactionDate = transactionDate;
-        this.isExpanded = isExpanded;
     }
 
     public long getAmount() {

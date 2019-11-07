@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.isproject.ptps.NumberPlate;
 import com.isproject.ptps.R;
 import com.isproject.ptps.Vehicle;
 
@@ -118,6 +119,11 @@ public class VehicleDetailsActivity extends AppCompatActivity {
                             .child("Vehicle Details").setValue(vehicle);
                     databaseReference.child("Users").child(userUID).child("vehicles").push().setValue(licencePlate);
 
+                    //TODO: additional code by Eph
+                    NumberPlate numberPlate = new NumberPlate(licencePlate);
+                    FirebaseDatabase.getInstance().getReference().child("Users").child(userUID)
+                            .child("vehicles").push().setValue(numberPlate);
+
                     Intent in = new Intent(VehicleDetailsActivity.this, DriverDetailsActivity.class);
                     in.putExtra("LICENCE_PLATE", licencePlate);
                     startActivity(in);
@@ -125,7 +131,12 @@ public class VehicleDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        //disabled back button
+        Utilities.showWarningDialog(this);
     }
 }

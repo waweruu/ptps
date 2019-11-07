@@ -1,45 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content" android:padding="10dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="10dp">
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="10dp">
+
+        <TextView
+            android:id="@+id/mpesaReceiptNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="26sp"
+            android:text="@string/label_receipt"
+            android:textColor="@color/primaryLightColor"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_weight="1"
-                android:gravity="center">
+                >
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="32sp"
-                    android:text="RECEIPT"
-                    android:textColor="@color/primaryLightColor"
-                    android:textStyle="bold" />
-
-                <TextView
+                    android:id="@+id/start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:text="START"
+                    android:text="@string/label_start"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/finish"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:text="FINISH"
+                    android:text="@string/label_finish"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/licencePlate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="@string/label_licence_plate"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -50,28 +70,48 @@
                 android:orientation="vertical"
                 android:layout_gravity="center">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="AMOUNT"
-                    android:textSize="18sp" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_currency"
+                        android:layout_marginEnd="5dp"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_amount"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
 
                 <TextView
+                    android:id="@+id/transactionDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:text="DATE"
+                    android:text="@string/label_date"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/transactionTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:text="LICENCE PLATE"
+                    android:text="@string/label_time"
                     android:textStyle="bold" />
 
             </LinearLayout>
+
+        </LinearLayout>
 
         </LinearLayout>
 

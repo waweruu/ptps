@@ -1,5 +1,6 @@
 package com.isproject.ptps.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,6 +20,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +48,46 @@ public class InputDetailsActivity extends AppCompatActivity {
         //initialising views
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+        //Ask user if they're ready to register
+        //Or they can wait for when they've more time
+        AlertDialog.Builder timeDialog = new AlertDialog.Builder(this);
+        timeDialog.setTitle("Registering");
+        timeDialog.setMessage("Please ensure that you have time to complete the registration" +
+                " process. You will not be allowed to move back through the forms provided");
+        timeDialog.setCancelable(false);
+        timeDialog.setPositiveButton("I'M FREE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Toast.makeText(getApplicationContext(), "Please continue", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+        timeDialog.setNegativeButton("DO THIS LATER", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Toast.makeText(getApplicationContext(), "Signing you out", Toast.LENGTH_SHORT)
+                        .show();
+                AuthUI.getInstance()
+                        .signOut(getApplicationContext())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        AlertDialog time = timeDialog.create();
+        time.show();
 
         textFirstName = findViewById(R.id.editTextFirstName);
         textLastName = findViewById(R.id.editTextLastName);
@@ -142,9 +187,12 @@ public class InputDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-
-
-
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        //Disabled back button
+        Utilities.showWarningDialog(this);
     }
 }

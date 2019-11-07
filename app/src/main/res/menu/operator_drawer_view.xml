@@ -4,22 +4,17 @@
         <item
             android:id="@+id/nav_operator_home_frag"
             android:icon="@drawable/ic_menu_home"
-            android:title="Home"
+            android:title="@string/menuItem_home"
             android:checked="true"/>
-
-        <item
-            android:id="@+id/nav_trip_payments_frag"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Trip Payments" />
 
         <item
             android:id="@+id/nav_passenger_payments_frag"
             android:icon="@drawable/ic_payment_black_24dp"
-            android:title="Passenger Payments" />
+            android:title="@string/menuItem_passenger_payments" />
 
         <item
             android:id="@+id/nav_operator_account_frag"
             android:icon="@drawable/ic_person_black_24dp"
-            android:title="Account" />
+            android:title="@string/menuItem_account" />
     </group>
 </menu>

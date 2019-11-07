@@ -12,12 +12,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
-app.post("/:licencePlate/:userUid/:start/:finish", (request, response) => {
+app.post("/:licencePlate/:userUid/:start/:finish/:token", (request, response) => {
   const entry = request.body.Body.stkCallback.CallbackMetadata.Item;
   const userUid = request.params.userUid;
   const start = request.params.start;
   const finish = request.params.finish;
   const licencePlate = request.params.licencePlate;
+  const token = request.params.token;
   let licArr = licencePlate.split('_');
   let numberPlate = licArr[0] + " " + licArr[1];
   let message = {
@@ -44,7 +45,8 @@ app.post("/:licencePlate/:userUid/:start/:finish", (request, response) => {
       "phoneNumber": phoneValue,
       "start": start,
       "finish": finish,
-      "licencePlate": numberPlate
+      "licencePlate": numberPlate,
+      "userUid": userUid
   };
 
   //let amount = entry.Item.Amount;
@@ -59,7 +61,25 @@ app.post("/:licencePlate/:userUid/:start/:finish", (request, response) => {
 
   //let det = {number: [{"amount": amount, "receiptNumber": receipt, "date": date}]};
 
-  admin.database().ref('/Payments').child(userUid).child(receiptValue).set(amountNode)
+  let body = "Payment " + receiptValue + " of Ksh. " + amountValue + " received for " +
+    phoneValue + " from " + start + " to " + finish + " in " + numberPlate;
+
+  let not = {
+    notification: {
+      title: "Payment Confirmation",
+      body: body
+    }
+  };
+
+  admin.messaging().sendToDevice(token, not)
+    .then(function(response) {
+      console.log('Successfully sent message:', response);
+    })
+    .catch(function(error) {
+      console.log('Error sending message:', error);
+    });
+
+  admin.database().ref('/Payments').child(receiptValue).set(amountNode)
     .then(() => {
       return response.json(message);
     }).catch(error => {

@@ -20,12 +20,12 @@
 
         <Button
             android:id="@+id/buttonProvideDetails"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/primaryColor"
+            android:textSize="20sp"
             android:padding="5dp"
             android:text="@string/button_next"
-            android:textColor="@color/textColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

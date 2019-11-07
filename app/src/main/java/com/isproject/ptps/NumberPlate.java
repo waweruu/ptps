@@ -1,26 +1,27 @@
 package com.isproject.ptps;
 
 public class NumberPlate extends DataObject implements DataModels {
+    private String vehicle;
 
-    private String numberPlate;
-
-    public NumberPlate(String numberPlate) {
-        this.numberPlate = numberPlate;
+    public NumberPlate(String vehicle) {
+        this.vehicle = vehicle;
     }
 
     public NumberPlate() {
     }
 
-    public String getNumberPlate() {
-        return numberPlate;
+    public String getVehicle() {
+        return vehicle;
     }
 
-    public void setNumberPlate(String numberPlate) {
-        this.numberPlate = numberPlate;
+    public void setVehicle(String vehicle) {
+        this.vehicle = vehicle;
+
     }
 
     @Override
     public int getModelType() {
-        return DataModels.MODEL_OWNER_VEHICLES;
+        return DataModels.MODEL_NUMBER_PLATE;
+
     }
 }

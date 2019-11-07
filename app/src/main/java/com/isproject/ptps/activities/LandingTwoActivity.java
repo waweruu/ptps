@@ -18,9 +18,7 @@ import com.isproject.ptps.fragments.owner.ViewFareChartFragment;
 import com.isproject.ptps.mpesa.interfaces.AuthListener;
 import com.isproject.ptps.mpesa.interfaces.MpesaListener;
 import com.isproject.ptps.mpesa.utils.Pair;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,12 +26,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.isproject.ptps.Operator;
 import com.isproject.ptps.R;
 import com.isproject.ptps.fragments.operator.OperatorAccountFragment;
 import com.isproject.ptps.fragments.operator.OperatorHomeFragment;
 import com.isproject.ptps.fragments.operator.PassengerPaymentsFragment;
-import com.isproject.ptps.fragments.operator.TripPaymentsFragment;
 import com.isproject.ptps.fragments.owner.FareChartFragment;
 import com.isproject.ptps.fragments.owner.OwnerAccountFragment;
 import com.isproject.ptps.fragments.owner.OwnerHomeFragment;
@@ -113,14 +109,32 @@ public class LandingTwoActivity extends AppCompatActivity
                             navigationView.inflateMenu(R.menu.passenger_drawer_view);
                             setupPassengerDrawerContent(navigationView);
                             setTitle(R.string.title_passenger_module);
+                            //navigationView.setCheckedItem(R.id.nav_passenger_home_frag);
+                            Fragment fragment = new PassengerHomeFragment();
+                            FragmentManager fm = getSupportFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.fl_content, fragment);
+                            ft.commit();
                         } else if (userType.equals("Owner")) {
                             navigationView.inflateMenu(R.menu.owner_drawer_view);
                             setupOwnerDrawerContent(navigationView);
                             setTitle(R.string.title_owner_module);
+                            //navigationView.setCheckedItem(R.id.nav_owner_home_frag);
+                            Fragment fragment = new OwnerHomeFragment();
+                            FragmentManager fm = getSupportFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.fl_content, fragment);
+                            ft.commit();
                         } else if (userType.equals("Conductor") || userType.equals("Driver")) {
                             navigationView.inflateMenu(R.menu.operator_drawer_view);
                             setupOperatorDrawerContent(navigationView);
                             setTitle(R.string.title_operator_module);
+                            //navigationView.setCheckedItem(R.id.nav_operator_home_frag);
+                            Fragment fragment = new OperatorHomeFragment();
+                            FragmentManager fm = getSupportFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.fl_content, fragment);
+                            ft.commit();
                         }
 
                         //Testing
@@ -129,12 +143,15 @@ public class LandingTwoActivity extends AppCompatActivity
                             public void onReceive(Context context, Intent intent) {
                                 if(intent.getAction().equals(NOTIFICATION)) {
                                     String title = intent.getStringExtra("title");
-                                    String message = intent.getStringExtra("message");
+                                    String body = intent.getStringExtra("body");
                                     int code = intent.getIntExtra("code", 0);
-                                    showDialog(title, message, code);
+                                    //showDialog(title, body, code);
                                 }
                             }
                         };
+
+                        //LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mRegistrationBroadcastReceiver,
+                                //new IntentFilter(NOTIFICATION));
                     } else {
                         String message = "Not working";
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -275,9 +292,6 @@ public class LandingTwoActivity extends AppCompatActivity
         Class fragmentClass;
 
         switch(menuItem.getItemId()) {
-            case R.id.nav_trip_payments_frag:
-                fragmentClass = TripPaymentsFragment.class;
-                break;
             case R.id.nav_passenger_payments_frag:
                 fragmentClass = PassengerPaymentsFragment.class;
                 break;
@@ -403,7 +417,7 @@ public class LandingTwoActivity extends AppCompatActivity
 
 
 
-    private void showDialog(String title, String message, int code) {
+    /*private void showDialog(String title, String message, int code) {
         //Push to db
         String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference dr = FirebaseDatabase.getInstance().getReference().child("Payments/" +
@@ -429,20 +443,7 @@ public class LandingTwoActivity extends AppCompatActivity
         });
         AlertDialog successDialog = successBuilder.create();
         successDialog.show();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(NOTIFICATION));
-    }
-
-    @Override
-    public void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        super.onPause();
-    }
+    }*/
 
     @Override
     public void onAuthError(Pair<Integer, String> result) {

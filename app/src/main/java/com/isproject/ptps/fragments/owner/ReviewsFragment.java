@@ -1,25 +1,10 @@
-package com.isproject.ptps.fragments.passenger;
+package com.isproject.ptps.fragments.owner;
 
+import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.isproject.ptps.DataModelsAdapter;
-import com.isproject.ptps.DataObject;
-import com.isproject.ptps.PaymentReceipt;
-import com.isproject.ptps.R;
-
-import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,12 +12,31 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PaymentHistoryFragment extends Fragment {
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.isproject.ptps.DataModels;
+import com.isproject.ptps.DataModelsAdapter;
+import com.isproject.ptps.DataObject;
+import com.isproject.ptps.R;
+import com.isproject.ptps.Review;
+
+import java.util.ArrayList;
+
+public class ReviewsFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private ArrayList<DataObject> mDataModels = new ArrayList<>();
+    private ArrayList<DataObject> mDataObjects = new ArrayList<>();
 
-    public PaymentHistoryFragment() {
+    public ReviewsFragment() {
         // Required empty public constructor
     }
 
@@ -45,8 +49,8 @@ public class PaymentHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_payment_history, container, false);
-        recyclerView = view.findViewById(R.id.paymentHistoryRecyclerView);
+        View view = inflater.inflate(R.layout.fragment_reviews, container, false);
+        recyclerView  = view.findViewById(R.id.reviewsSpecRecycler);
         return view;
     }
 
@@ -54,20 +58,28 @@ public class PaymentHistoryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String userUid = FirebaseAuth.getInstance().getUid();
+        Bundle bundle = this.getArguments();
+        String licencePlate = bundle.getString("LICENCE_PLATE");
 
-        Query query = FirebaseDatabase.getInstance().getReference().child("Payments").orderByChild("userUid").equalTo(userUid);
+        //Toast.makeText(getContext(), licencePlate, Toast.LENGTH_SHORT).show();
+
+        Query query = FirebaseDatabase.getInstance().getReference().child("Reviews")
+                .orderByChild("licencePlate").equalTo(licencePlate);
 
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                PaymentReceipt receipt = dataSnapshot.getValue(PaymentReceipt.class);
-                mDataModels.add(receipt);
-                DataModelsAdapter adapter = new DataModelsAdapter(mDataModels, null, getContext());
+                //if(dataSnapshot.exists()) Toast.makeText(getContext(), "No Daa!",
+                //Toast.LENGTH_SHORT).show();
+                Review review = dataSnapshot.getValue(Review.class);
+                Toast.makeText(getContext(), review.getTimeStamp(), Toast.LENGTH_SHORT).show();
+                mDataObjects.add(review);
+
                 LinearLayoutManager lean = new LinearLayoutManager(getContext());
                 lean.setOrientation(RecyclerView.VERTICAL);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(lean);
+                DataModelsAdapter adapter = new DataModelsAdapter(mDataObjects, null, getContext());
                 recyclerView.setAdapter(adapter);
             }
 

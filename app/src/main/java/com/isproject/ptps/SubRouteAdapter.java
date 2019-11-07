@@ -49,7 +49,6 @@ public class SubRouteAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ((SubRouteViewHolder) holder).bindView(position);
-        //TODO: Implement onClickListener
         View view = holder.itemView;
         TextView textPrice = view.findViewById(R.id.textRoutePrice);
         TextView textStart = view.findViewById(R.id.textRouteStart);
