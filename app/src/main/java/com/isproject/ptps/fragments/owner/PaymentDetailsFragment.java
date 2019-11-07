@@ -1,136 +1,114 @@
 package com.isproject.ptps.fragments.owner;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.isproject.ptps.PaymentReceipt;
 import com.isproject.ptps.R;
+import com.isproject.ptps.activities.Utilities;
+import com.isproject.ptps.mpesa.utils.TimeUtil;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class PaymentDetailsFragment extends Fragment {
+public class PaymentDetailsFragment extends Fragment implements ChooseLicencePlateFragment.OnLicencePlateClicked {
 
-    TextView labelDay,labelWeek,labelMonth,textPaymentsDay,textPaymentsWeek,textPaymentsMonth;
+    TextView textPaymentsDay,textPaymentsPastMonth, textPaymentsCurrentMonth;
     View subItemDay,subItemWeek,subItemMonth;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    PaymentReceipt paymentReceipt=new PaymentReceipt();
     String licencePlate;
+    Fragment fragment = new ChooseLicencePlateFragment();
+    ArrayList<Long> totalCurrentMonthAmount = new ArrayList<>();
+    ArrayList<Long> totalPastMonthAmount = new ArrayList<>();
+    ArrayList<Long> totalDayAmount = new ArrayList<>();
 
-    List<PaymentReceipt> paymentsList;
 
     public PaymentDetailsFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        final Bundle bundle = this.getArguments();
-        licencePlate = bundle.getString("LICENCE_PLATE");
-
-//        Log.e("ASD", licencePlate);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_payment_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_payment_details, container, false);
 
-        labelDay=view.findViewById(R.id.labelDayPayments);
-        labelWeek=view.findViewById(R.id.labelWeekPayments);
-        labelMonth=view.findViewById(R.id.labelMonthPayments);
-        textPaymentsDay=view.findViewById(R.id.day_payments_total);
-        textPaymentsWeek=view.findViewById(R.id.week_payments_total);
-        textPaymentsMonth=view.findViewById(R.id.month_payments_total);
+        textPaymentsDay = view.findViewById(R.id.day_payments_total);
+        textPaymentsCurrentMonth = view.findViewById(R.id.current_month_payments_total);
+        textPaymentsPastMonth = view.findViewById(R.id.past_month_payments_total);
 
-        subItemDay=view.findViewById(R.id.subItemDayPayments);
-        subItemWeek=view.findViewById(R.id.subItemWeekPayments);
-        subItemMonth=view.findViewById(R.id.subItemMonthPayments);
+        subItemDay = view.findViewById(R.id.subItemDayPayments);
+        subItemWeek = view.findViewById(R.id.subItemWeekPayments);
+        subItemMonth = view.findViewById(R.id.subItemMonthPayments);
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        addLicencePlateFragment();
+    }
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference();
+    private void addLicencePlateFragment() {
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragmentPaymentDetails, fragment);
+        ft.addToBackStack("ChoosePlateToReview");
+        ft.commit();
+    }
 
-        FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+    @Override
+    public void sendSelectedLicencePlate(String licencePlate) {
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fragment);
+        ft.commit();
 
-        String userUID = current_user.getUid();
+        //showing payment details
+        loadPaymentDetails(licencePlate);
+    }
 
-        DatabaseReference db_ref = databaseReference
-                .child("Users")
-                .child(userUID).child("vehicles");
+    public void loadPaymentDetails(String licencePlate) {
+        Query payments = FirebaseDatabase.getInstance().getReference("Payments")
+                .orderByChild("licencePlate").equalTo(licencePlate);
 
-        databaseReference=firebaseDatabase.getReference().child("Payments");
-
-        final Query payments = databaseReference.orderByChild("licencePlate").equalTo(licencePlate);
-
-        payments.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Map<String, PaymentReceipt> td = (HashMap<String, PaymentReceipt>) dataSnapshot.getValue();
-
-//                Collection<PaymentReceipt> values = td.values();
-                ArrayList<PaymentReceipt> valueList = new ArrayList<PaymentReceipt>(td.values());
-
-//                Log.e("ASD", dataSnapshot.getValue().toString());
-
-                if (td != null) {
-                    paymentsList = valueList;
-                    Log.e("ASD", paymentsList.toString());
-                }
-                else
-                    Toast.makeText(getContext(), "No Payments available", Toast.LENGTH_SHORT).show();
-
-//                Log.e("ASD", values.toString());
-
-                calculatePayments();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        payments.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                licencePlate = dataSnapshot.child("vehicle").getValue().toString();
-//                List<PaymentReceipt> pr = new ArrayList<>();
-//
-//                pr.add(dataSnapshot.getValue(PaymentReceipt.class));
-//
-////                for (DataSnapshot d: dataSnapshot.getChildren()) {
-//                    Log.e("ASD", pr.toString());
-////                }
+                final String date = TimeUtil.getTimestamp();
+                PaymentReceipt receipt = dataSnapshot.getValue(PaymentReceipt.class);
+                String receiptDate = String.valueOf(receipt.getTransactionDate());
+                if (receiptDate.substring(4, 6).equals(date.substring(4, 6))) {
+                    //receiptDate equals current month
+                    totalCurrentMonthAmount.add(receipt.getAmount());
+                } else if (receiptDate.substring(6, 8).equals(date.substring(6, 8))) {
+                    //receiptDate equals day
+                    totalDayAmount.add(receipt.getAmount());
+                } else if(receiptDate.substring(4, 6).equals(String.valueOf(Long.valueOf(date.substring(4, 6)) - 1))) {
+                    //receiptDate equals past month
+                    totalPastMonthAmount.add(receipt.getAmount());
+                }
+
+                textPaymentsCurrentMonth.setText(String.valueOf(Utilities.getArrayListSum(totalCurrentMonthAmount)));
+                textPaymentsDay.setText(String.valueOf(Utilities.getArrayListSum(totalDayAmount)));
+                textPaymentsPastMonth.setText(String.valueOf(Utilities.getArrayListSum(totalPastMonthAmount)));
 
             }
 
@@ -155,26 +133,5 @@ public class PaymentDetailsFragment extends Fragment {
             }
         });
 
-
-        return view;
-    }
-
-    private void calculatePayments() {
-        textPaymentsDay.setText(calculateDaysPayments());
-    }
-
-    private String calculateDaysPayments() {
-        List<PaymentReceipt> payments = new ArrayList<>();
-
-//        Log.e("ASD", paymentsList.toString());
-
-        for (PaymentReceipt pr: paymentsList) {
-            if (DateUtils.isToday(pr.getTransactionDate()))
-                payments.add(pr);
-        }
-//
-        Log.e("ASD", payments.toString());
-
-        return "1";
     }
 }

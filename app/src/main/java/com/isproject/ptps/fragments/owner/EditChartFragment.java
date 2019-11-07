@@ -32,7 +32,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class EditChartFragment extends Fragment {
 
-    TextView number, start, finish,viewChart;
+    TextView number, start, finish, viewChart;
     Spinner first_subroute, last_subroute;
     EditText price;
     String licencePlate;
@@ -102,7 +102,7 @@ public class EditChartFragment extends Fragment {
         FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
 
         String userUID = current_user.getUid();
-        Intent previousIntent =getActivity().getIntent();
+        Intent previousIntent = getActivity().getIntent();
 
         DatabaseReference db_ref = firebaseDatabase.getReference().child("Users")
                 .child(userUID).child("vehicles");
@@ -319,7 +319,7 @@ public class EditChartFragment extends Fragment {
         FragmentTransaction ft = fm.beginTransaction();
 
         Bundle bundle = new Bundle();
-        bundle.putString("LICENCE PLATE", licencePlate);
+        bundle.putString("LICENCE_PLATE", licencePlate);
         bundle.putString("ROUTE_NUMBER",routeNumber );
         bundle.putString("ROUTE_START", routeStart);
         bundle.putString("ROUTE_FINISH", routeFinish);

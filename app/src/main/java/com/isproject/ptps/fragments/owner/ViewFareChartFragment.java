@@ -69,7 +69,7 @@ public class ViewFareChartFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        final String licencePlate = bundle.getString("LICENCE PLATE");
+        final String licencePlate = bundle.getString("LICENCE_PLATE");
         routeStart = bundle.getString("ROUTE_NUMBER");
         routeFinish = bundle.getString("ROUTE_START");
         routePrice = bundle.getString("ROUTE_FINISH");

@@ -163,10 +163,7 @@ public class PassengerReviewsFragment extends Fragment implements ChooseLicenceP
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //if(dataSnapshot.exists()) Toast.makeText(getContext(), "No Daa!",
-                //Toast.LENGTH_SHORT).show();
                 Review review = dataSnapshot.getValue(Review.class);
-                Toast.makeText(getContext(), review.getTimeStamp(), Toast.LENGTH_SHORT).show();
                 mDataObjects.add(review);
 
                 LinearLayoutManager lean = new LinearLayoutManager(getContext());

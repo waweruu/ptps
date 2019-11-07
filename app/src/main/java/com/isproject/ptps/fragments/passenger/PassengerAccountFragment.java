@@ -2,18 +2,15 @@ package com.isproject.ptps.fragments.passenger;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -22,14 +19,9 @@ import com.google.firebase.database.Query;
 import com.isproject.ptps.R;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.isproject.ptps.User;
 import com.isproject.ptps.UserHolder;
-import com.isproject.ptps.activities.LandingActivity;
 import com.isproject.ptps.activities.WelcomeActivity;
 
 import java.util.ArrayList;
@@ -39,7 +31,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class PassengerAccountFragment extends Fragment {
 
@@ -86,14 +77,6 @@ public class PassengerAccountFragment extends Fragment {
         String userUid = currentUser.getUid();
         Query query = FirebaseDatabase.getInstance().getReference().child("Users")
                 .orderByKey().equalTo(userUid);
-
-        /*SnapshotParser<User> snapshotParser = new SnapshotParser<User>() {
-            @NonNull
-            @Override
-            public User parseSnapshot(@NonNull DataSnapshot snapshot) {
-                return snapshot.child("User").getValue(User.class);
-            }
-        };*/
 
         options = new FirebaseRecyclerOptions.Builder<User>().setQuery(query, User.class)
                 .build();

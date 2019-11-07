@@ -1,20 +1,10 @@
 package com.isproject.ptps.activities;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import com.isproject.ptps.DataModelsAdapter;
 import com.isproject.ptps.fragments.owner.AddVehicleFragment;
-import com.isproject.ptps.fragments.owner.DisplayLicencesFragment;
-import com.isproject.ptps.fragments.owner.EditChartFragment;
-import com.isproject.ptps.fragments.owner.OwnerVehiclesFragment;
-import com.isproject.ptps.fragments.owner.ViewFareChartFragment;
 import com.isproject.ptps.mpesa.interfaces.AuthListener;
 import com.isproject.ptps.mpesa.interfaces.MpesaListener;
 import com.isproject.ptps.mpesa.utils.Pair;
@@ -49,29 +39,21 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class LandingTwoActivity extends AppCompatActivity
         implements ScanQrCodeFragment.OnCodeScannedListener,
-        PassengerHomeFragment.OnCardClickedListener, AuthListener, MpesaListener ,OwnerHomeFragment.OnOwnerCardClickedListener {
+        PassengerHomeFragment.OnCardClickedListener, AuthListener, MpesaListener ,OwnerHomeFragment.OnOwnerCardClickedListener,
+        OperatorHomeFragment.OnOperatorCardClicked {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private NavigationView navigationView;
     private ActionBarDrawerToggle drawerToggle;
     private String userType;
-
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
-    public static final String  NOTIFICATION = "PushNotification";
-    public static final String SHARED_PREFERENCES = "com.isproject.ptps";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,50 +90,31 @@ public class LandingTwoActivity extends AppCompatActivity
                         if (userType.equals("Passenger")) {
                             navigationView.inflateMenu(R.menu.passenger_drawer_view);
                             setupPassengerDrawerContent(navigationView);
-                            setTitle(R.string.title_passenger_module);
-                            //navigationView.setCheckedItem(R.id.nav_passenger_home_frag);
                             Fragment fragment = new PassengerHomeFragment();
                             FragmentManager fm = getSupportFragmentManager();
                             FragmentTransaction ft = fm.beginTransaction();
                             ft.replace(R.id.fl_content, fragment);
+                            setTitle("Home");
                             ft.commit();
                         } else if (userType.equals("Owner")) {
                             navigationView.inflateMenu(R.menu.owner_drawer_view);
                             setupOwnerDrawerContent(navigationView);
-                            setTitle(R.string.title_owner_module);
-                            //navigationView.setCheckedItem(R.id.nav_owner_home_frag);
                             Fragment fragment = new OwnerHomeFragment();
                             FragmentManager fm = getSupportFragmentManager();
                             FragmentTransaction ft = fm.beginTransaction();
                             ft.replace(R.id.fl_content, fragment);
+                            setTitle("Home");
                             ft.commit();
                         } else if (userType.equals("Conductor") || userType.equals("Driver")) {
                             navigationView.inflateMenu(R.menu.operator_drawer_view);
                             setupOperatorDrawerContent(navigationView);
-                            setTitle(R.string.title_operator_module);
-                            //navigationView.setCheckedItem(R.id.nav_operator_home_frag);
                             Fragment fragment = new OperatorHomeFragment();
                             FragmentManager fm = getSupportFragmentManager();
                             FragmentTransaction ft = fm.beginTransaction();
                             ft.replace(R.id.fl_content, fragment);
+                            setTitle("Home");
                             ft.commit();
                         }
-
-                        //Testing
-                        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-                            @Override
-                            public void onReceive(Context context, Intent intent) {
-                                if(intent.getAction().equals(NOTIFICATION)) {
-                                    String title = intent.getStringExtra("title");
-                                    String body = intent.getStringExtra("body");
-                                    int code = intent.getIntExtra("code", 0);
-                                    //showDialog(title, body, code);
-                                }
-                            }
-                        };
-
-                        //LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mRegistrationBroadcastReceiver,
-                                //new IntentFilter(NOTIFICATION));
                     } else {
                         String message = "Not working";
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -238,7 +201,10 @@ public class LandingTwoActivity extends AppCompatActivity
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fl_content, fragment);
+        fragmentTransaction.addToBackStack(menuItem.getTitle().toString());
+        fragmentTransaction.commit();
 
         menuItem.setChecked(true);
 
@@ -256,7 +222,7 @@ public class LandingTwoActivity extends AppCompatActivity
                 fragmentClass = FareChartFragment.class;
                 break;
             case R.id.nav_payment_details_frag:
-                fragmentClass = DisplayLicencesFragment.class;
+                fragmentClass = PaymentDetailsFragment.class;
                 break;
             case R.id.nav_passenger_reviews_frag:
                 fragmentClass = PassengerReviewsFragment.class;
@@ -278,7 +244,10 @@ public class LandingTwoActivity extends AppCompatActivity
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fl_content, fragment);
+        fragmentTransaction.addToBackStack(menuItem.getTitle().toString());
+        fragmentTransaction.commit();
 
         menuItem.setChecked(true);
 
@@ -309,7 +278,10 @@ public class LandingTwoActivity extends AppCompatActivity
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fl_content, fragment);
+        fragmentTransaction.addToBackStack(menuItem.getTitle().toString());
+        fragmentTransaction.commit();
 
         menuItem.setChecked(true);
 
@@ -352,24 +324,26 @@ public class LandingTwoActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Fragment frag;
-        MenuItem item;
 
         switch (fragment) {
             case "scan":
                 frag = new ScanQrCodeFragment();
                 ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("Scan QR code");
                 ft.commit();
                 setTitle("Scan QR Code");
                 break;
             case "history":
                 frag = new PaymentHistoryFragment();
                 ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("Payment History");
                 ft.commit();
                 setTitle("Payment History");
                 break;
             case "account":
                 frag = new PassengerAccountFragment();
                 ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("Account");
                 setTitle("Account");
                 ft.commit();
                 break;
@@ -379,71 +353,45 @@ public class LandingTwoActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         Fragment frag;
-        MenuItem item;
 
         switch(fragment){
             case "farechart":
-                frag = new OwnerVehiclesFragment();
+                frag = new FareChartFragment();
                 ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("Fare Chart");
                 ft.commit();
                 setTitle("Fare Chart");
                 break;
             case "details":
                 frag = new PaymentDetailsFragment();
                 ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("Payment Details");
                 ft.commit();
                 setTitle("Payment Details");
                 break;
             case "reviews":
                 frag = new PassengerReviewsFragment();
                 ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("Passenger Reviews");
                 setTitle("Passenger Reviews");
                 ft.commit();
                 break;
             case "vehicle":
                 frag = new AddVehicleFragment();
                 ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("Add Vehicle");
                 setTitle("Add Vehicle");
                 ft.commit();
                 break;
             case "account":
                 frag = new OwnerAccountFragment();
                 ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("Account");
                 setTitle("Account");
                 ft.commit();
                 break;
         }
     }
-
-
-
-    /*private void showDialog(String title, String message, int code) {
-        //Push to db
-        String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference dr = FirebaseDatabase.getInstance().getReference().child("Payments/" +
-                userUid);
-        dr.push().setValue(message);
-
-        AlertDialog.Builder successBuilder = new AlertDialog.Builder(this);
-        successBuilder.setTitle(title);
-        successBuilder.setCancelable(false);
-        View view = LayoutInflater.from(this).inflate(R.layout.success_dialog, null);
-        TextView textMessage = view.findViewById(R.id.message);
-        ImageView imageView = view.findViewById(R.id.success);
-        if(code != 0) {
-            imageView.setVisibility(View.GONE);
-        }
-        textMessage.setText(message);
-        successBuilder.setView(view);
-        successBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        AlertDialog successDialog = successBuilder.create();
-        successDialog.show();
-    }*/
 
     @Override
     public void onAuthError(Pair<Integer, String> result) {
@@ -465,4 +413,27 @@ public class LandingTwoActivity extends AppCompatActivity
         Toast.makeText(this, CustomerMessage, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void goToOperatorFragment(String fragment) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment frag;
+
+        switch (fragment) {
+            case "payments":
+                frag = new PassengerPaymentsFragment();
+                ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("payments");
+                setTitle("Passenger Payments");
+                ft.commit();
+                break;
+            case "account":
+                frag = new OperatorAccountFragment();
+                ft.replace(R.id.fl_content, frag);
+                ft.addToBackStack("account");
+                setTitle("Account");
+                ft.commit();
+                break;
+        }
+    }
 }

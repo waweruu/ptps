@@ -1,9 +1,5 @@
 package com.isproject.ptps.fragments.owner;
 
-import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,13 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.isproject.ptps.DataModels;
 import com.isproject.ptps.DataModelsAdapter;
 import com.isproject.ptps.DataObject;
 import com.isproject.ptps.R;
@@ -60,8 +54,6 @@ public class ReviewsFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         String licencePlate = bundle.getString("LICENCE_PLATE");
-
-        //Toast.makeText(getContext(), licencePlate, Toast.LENGTH_SHORT).show();
 
         Query query = FirebaseDatabase.getInstance().getReference().child("Reviews")
                 .orderByChild("licencePlate").equalTo(licencePlate);

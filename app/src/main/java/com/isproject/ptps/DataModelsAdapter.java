@@ -3,8 +3,6 @@ package com.isproject.ptps;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +12,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.isproject.ptps.fragments.owner.EditChartFragment;
-import com.isproject.ptps.fragments.owner.FareChartFragment;
 
 public class DataModelsAdapter extends RecyclerView.Adapter {
 
@@ -30,7 +22,7 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
     private Context context;
     private DataPasser mListener;
     private OnNumberPlateClicked mCallback;
-    
+
     OnLicencePlateSelectedListener mCallbacks;
 
     public void setmCallbacks(OnLicencePlateSelectedListener mCallbacks) {
@@ -108,13 +100,13 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
                 return new ReviewViewHolder(itemView);
 
 
-                case DataModels.MODEL_OWNER_VEHICLES:
-                    itemView=LayoutInflater.from(parent.getContext()).inflate(R.layout.owner_vehicles_display,parent,false);
-                    return new OwnerVehiclesViewHolder(itemView);
+            case DataModels.MODEL_OWNER_VEHICLES:
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.owner_vehicles_display, parent, false);
+                return new OwnerVehiclesViewHolder(itemView);
 
 
             case DataModels.MODEL_OWNER_PAYMENTS:
-                itemView=LayoutInflater.from(parent.getContext()).inflate(R.layout.owner_payments,parent,false);
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.owner_payments, parent, false);
                 return new OwnerPaymentsViewHolder(itemView);
 
             default:
@@ -205,7 +197,7 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                               mCallbacks.onPositiveClick();
+                                mCallbacks.onPositiveClick();
 
 
                             }
@@ -224,8 +216,8 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
                 });
                 break;
             case DataModels.MODEL_OWNER_PAYMENTS:
-                ((OwnerPaymentsViewHolder)holder).bindView(position);
-                final PaymentReceipt paymentReceipt= (PaymentReceipt) mDataModelsList.get(position);
+                ((OwnerPaymentsViewHolder) holder).bindView(position);
+                final PaymentReceipt paymentReceipt = (PaymentReceipt) mDataModelsList.get(position);
                 holder.itemView.findViewById(R.id.labelOperatorDetails).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -245,7 +237,7 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        if(mDataModelsList == null) {
+        if (mDataModelsList == null) {
             return 0;
         } else {
             return mDataModelsList.size();
@@ -296,8 +288,8 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
 
     public class OperatorViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView textFirstName, textLastName, textIdNumber, textPhoneNumber;
-            private View subItem;
+        private TextView textFirstName, textLastName, textIdNumber, textPhoneNumber;
+        private View subItem;
 
         public OperatorViewHolder(View itemView) {
             super(itemView);
@@ -347,16 +339,18 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
             textRouteFinish.setText(fareChart.getRouteFinish());
         }
     }
-    public class OwnerVehiclesViewHolder extends RecyclerView.ViewHolder{
+
+    public class OwnerVehiclesViewHolder extends RecyclerView.ViewHolder {
         private TextView textDisplayLicencePlate;
 
         public OwnerVehiclesViewHolder(@NonNull View itemView) {
             super(itemView);
             textDisplayLicencePlate = itemView.findViewById(R.id.textDisplayVehicleLicencePlate);
         }
-        public void bindView(int position){
+
+        public void bindView(int position) {
             NumberPlate plate = (NumberPlate) mDataModelsList.get(position);
-            textDisplayLicencePlate.setText(plate.getNumberPlate());
+            textDisplayLicencePlate.setText(plate.getVehicle());
         }
     }
 
@@ -478,9 +472,6 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
         }
     }
 
-    /*public class SubRouteViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView subrouteStart, subrouteFinish, subroutePrice;
     public class OwnerPaymentsViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textDayPayments, textWeekPayments, textMonthPayments;
@@ -490,8 +481,8 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             textDayPayments=itemView.findViewById(R.id.day_payments_total);
-            textWeekPayments=itemView.findViewById(R.id.week_payments_total);
-            textMonthPayments=itemView.findViewById(R.id.month_payments_total);
+            textWeekPayments=itemView.findViewById(R.id.current_month_payments_total);
+            textMonthPayments=itemView.findViewById(R.id.past_month_payments_total);
 
             subItemDay=itemView.findViewById(R.id.subItemDayPayments);
             subItemWeek=itemView.findViewById(R.id.subItemWeekPayments);
@@ -513,6 +504,4 @@ public class DataModelsAdapter extends RecyclerView.Adapter {
             textMonthPayments.setText((int) paymentReceipt.getAmount());
         }
     }
-
-
 }

@@ -78,7 +78,7 @@ public class AddDriverFragment extends Fragment {
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-                else if(id_number.length()!=10)
+                else if(id_number.length()!=8)
                 {
                     builder=new AlertDialog.Builder(getContext());
                     builder.setMessage("ID number should be 10 values");

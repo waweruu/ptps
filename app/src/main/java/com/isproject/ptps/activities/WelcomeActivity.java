@@ -5,11 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Path;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -21,12 +18,10 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.isproject.ptps.Operator;
 import com.isproject.ptps.R;
@@ -43,6 +38,7 @@ public class WelcomeActivity extends AppCompatActivity implements ProvideDetails
     private static final int SIGN_IN_RC = 2377;
     private final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private Toolbar toolbar;
+    private boolean exit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,20 +59,17 @@ public class WelcomeActivity extends AppCompatActivity implements ProvideDetails
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if(resultCode == RESULT_OK) {
-                //startActivity(new Intent(this, LandingActivity.class).putExtra("TOKEN", response.getIdpToken()));
-                //finish();
-
                 signInWithChecks();
             } else {
                 //sign in has failed
                 if(response == null) {
                     //User has pressed back button
-                    //add snackbar/toast
+                    Toast.makeText(this, "You have cancelled sign-in", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if(response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    //toast no internet connection
+                    Toast.makeText(this, ErrorCodes.NO_NETWORK, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -215,5 +208,14 @@ public class WelcomeActivity extends AppCompatActivity implements ProvideDetails
         }
     }
 
-    //TODO: Implemement on back presssed twice exit
+    @Override
+    public void onBackPressed() {
+        if(!exit) {
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+            exit = true;
+        } else {
+            finishAffinity();
+            finish();
+        }
+    }
 }

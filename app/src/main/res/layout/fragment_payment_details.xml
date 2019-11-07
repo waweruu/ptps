@@ -1,121 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:id="@+id/fragmentPaymentDetails"
     android:layout_height="match_parent"
-    tools:context=".fragments.owner.PaymentDetailsFragment">
+    tools:context=".fragments.owner.PaymentDetailsFragment" >
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="16dp"
-        android:background="#D3D3D3" />
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_width="match_parent" >
 
-    <TextView
-        android:id="@+id/labelDayPayments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryLightColor"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:text="Today's Payments" />
-
-    <LinearLayout
-        android:id="@+id/subItemDayPayments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical" >
-        <TextView
-            android:id="@+id/day_payments_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="26sp"
-            android:text="DAY'S TOTAL PAYMENTS"
-            android:textColor="@color/primaryDarkColor"
-            android:textStyle="bold"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="50dp"
-
-            />
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="16dp"
-        android:background="#D3D3D3" />
-
-    <TextView
-        android:id="@+id/labelWeekPayments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryLightColor"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:text="This Week's Payments" />
-
-    <LinearLayout
-        android:id="@+id/subItemWeekPayments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical" >
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="16dp"
+            android:background="#D3D3D3" />
 
         <TextView
-            android:id="@+id/week_payments_total"
-            android:layout_width="wrap_content"
+            android:id="@+id/labelDayPayments"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="26sp"
-            android:text="WEEK'S TOTAL PAYMENTS"
-            android:textColor="@color/primaryDarkColor"
-            android:textStyle="bold"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="50dp"
+            android:textColor="@color/primaryLightColor"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:text="Today's Payments" />
 
-            />
+        <LinearLayout
+            android:id="@+id/subItemDayPayments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical" >
 
+            <TextView
+                android:layout_margin="15dp"
+                android:id="@+id/day_payments_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_currency"
+                android:textColor="@color/primaryDarkColor"
+                android:textSize="26sp"
+                android:textStyle="bold"
+
+                />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="16dp"
+            android:background="#D3D3D3" />
+
+            <TextView
+                android:id="@+id/labelWeekPayments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="This Month's Payments"
+                android:textColor="@color/primaryLightColor"
+                android:textSize="20sp" />
+
+        <LinearLayout
+            android:id="@+id/subItemWeekPayments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical" >
+
+
+            <TextView
+                android:id="@+id/current_month_payments_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="@string/placeholder_currency"
+                android:textColor="@color/primaryDarkColor"
+                android:textSize="26sp"
+                android:textStyle="bold"
+
+                />
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="16dp"
+            android:background="#D3D3D3" />
+
+            <TextView
+                android:id="@+id/labelMonthPayments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Past Month's Payments"
+                android:textColor="@color/primaryLightColor"
+                android:textSize="20sp" />
+
+        <LinearLayout
+            android:id="@+id/subItemMonthPayments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_margin="15dp"
+                android:id="@+id/past_month_payments_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="26sp"
+                android:text="@string/placeholder_currency"
+                android:textColor="@color/primaryDarkColor"
+                android:textStyle="bold"
+
+                />
+        </LinearLayout>
 
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="16dp"
-        android:background="#D3D3D3" />
-
-    <TextView
-        android:id="@+id/labelMonthPayments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryLightColor"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:text="Past Month Payments" />
-
-    <LinearLayout
-        android:id="@+id/subItemMonthPayments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/month_payments_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="26sp"
-            android:text="MONTH'S TOTAL PAYMENTS"
-            android:textColor="@color/primaryDarkColor"
-            android:textStyle="bold"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="50dp"
-
-            />
-    </LinearLayout>
-
-</LinearLayout>
+</FrameLayout>

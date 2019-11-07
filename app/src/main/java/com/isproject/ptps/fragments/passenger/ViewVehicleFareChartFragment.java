@@ -102,12 +102,10 @@ public class ViewVehicleFareChartFragment extends Fragment {
     private BroadcastReceiver mRegBroadRec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //if(intent.getAction().equals(NOTIFICATION)) {
                 String title = intent.getStringExtra("title");
                 String body = intent.getStringExtra("body");
                 int code = intent.getIntExtra("code", 0);
                 showDialog(title, body, code);
-            //}
         }
     };
 
@@ -189,19 +187,16 @@ public class ViewVehicleFareChartFragment extends Fragment {
                     subRoute.setSubrouteStart(ds.getValue(SubRoute.class).getSubrouteStart());
                     subRoute.setSubrouteFinish(ds.getValue(SubRoute.class).getSubrouteFinish());
                     subRoute.setSubroutePrice(ds.getValue(SubRoute.class).getSubroutePrice());
-                    //Toast.makeText(getContext(), subRoute.getSubroutePrice(), Toast.LENGTH_LONG).show();
                     mSubRoutes.add(subRoute);
                 }
 
                 mDataModels.add(list);
-                //toastMessage(fareChart.getRouteNumber());
 
                 DataModelsAdapter adapter = new DataModelsAdapter(mDataModels, mSubRoutes, getContext());
                 adapter.setmListener(new DataModelsAdapter.DataPasser() {
                     @Override
                     public void passData(final SubRoute subRoute) {
 
-                        //Toast.makeText(context, textPrice.getText(), Toast.LENGTH_SHORT).show();
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Proceed?");
@@ -221,7 +216,6 @@ public class ViewVehicleFareChartFragment extends Fragment {
 
                                 String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
                                 phoneNumber = phoneNumber.substring(1);
-                                //String phoneNumber = "0712771254";
                                 Toast.makeText(getContext(), phoneNumber, Toast.LENGTH_LONG).show();
 
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -269,27 +263,11 @@ public class ViewVehicleFareChartFragment extends Fragment {
 
                     }
                 });
-                //adapter.setmDataModelsList(mDataModels);
                 LinearLayoutManager lean = new LinearLayoutManager(getContext());
                 lean.setOrientation(RecyclerView.VERTICAL);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(lean);
                 recyclerView.setAdapter(adapter);
-
-                /*mRegBroadRec = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        if(intent.getAction().equals(NOTIFICATION)) {
-                            String title = intent.getStringExtra("title");
-                            String body = intent.getStringExtra("body");
-                            int code = intent.getIntExtra("code", 0);
-                            showDialog(title, body, code);
-                        }
-                    }
-                };
-
-                LocalBroadcastManager.getInstance(getContext()).registerReceiver(mRegBroadRec,
-                        new IntentFilter(NOTIFICATION));*/
 
             }
 
@@ -302,11 +280,6 @@ public class ViewVehicleFareChartFragment extends Fragment {
 
 
     private void showDialog(String title, String message, int code) {
-        //Push to db
-        /*String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference dr = FirebaseDatabase.getInstance().getReference().child("Payments/" +
-                userUid);
-        dr.push().setValue(message);*/
         alertDialog.hide();
         AlertDialog.Builder successBuilder = new AlertDialog.Builder(getContext());
         successBuilder.setTitle(title);
@@ -374,12 +347,6 @@ public class ViewVehicleFareChartFragment extends Fragment {
         reviewDialog.show();
     }
 
-    /*@Override
-    public void onPause() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mRegBroadRec);
-        super.onPause();
-    }*/
-
     @Override
     public void onStop() {
         super.onStop();
@@ -402,23 +369,4 @@ public class ViewVehicleFareChartFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-
-    /*@Override
-    public void showSuccessDialog(String title, String body) {
-        AlertDialog.Builder successBuilder = new AlertDialog.Builder(getContext());
-        successBuilder.setTitle(title);
-        successBuilder.setCancelable(false);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.success_dialog, null);
-        TextView textMessage = view.findViewById(R.id.message);
-        textMessage.setText(body);
-        successBuilder.setView(view);
-        successBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        AlertDialog successDialog = successBuilder.create();
-        successDialog.show();
-    }*/
 }

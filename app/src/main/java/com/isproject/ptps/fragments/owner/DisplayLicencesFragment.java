@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ import com.isproject.ptps.DataModelsAdapter;
 import com.isproject.ptps.DataObject;
 import com.isproject.ptps.NumberPlate;
 import com.isproject.ptps.R;
-import com.isproject.ptps.Vehicle;
 import com.isproject.ptps.activities.LandingTwoActivity;
 
 import java.util.ArrayList;
@@ -37,9 +35,7 @@ import java.util.ArrayList;
 
 public class DisplayLicencesFragment extends Fragment {
     ArrayList<DataObject> mDataModels = new ArrayList<>();
-    Vehicle vehicle = new Vehicle();
     RecyclerView recyclerView;
-    FirebaseDatabase firebaseDatabase;
     String licencePlate;
     Button backButton;
 
@@ -87,7 +83,7 @@ public class DisplayLicencesFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull final DataSnapshot dataSnapshot, @Nullable String s) {
                 NumberPlate numberPlate = new NumberPlate();
-                numberPlate.setNumberPlate(dataSnapshot.getValue().toString());
+                numberPlate.setVehicle(dataSnapshot.getValue().toString());
 
                 mDataModels.add(numberPlate);
                 DataModelsAdapter adapter = new DataModelsAdapter(mDataModels, null, getContext());

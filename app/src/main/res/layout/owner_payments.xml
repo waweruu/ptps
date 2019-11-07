@@ -62,7 +62,7 @@
 
 
         <TextView
-            android:id="@+id/week_payments_total"
+            android:id="@+id/current_month_payments_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="26sp"
@@ -100,7 +100,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/month_payments_total"
+            android:id="@+id/past_month_payments_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="26sp"

@@ -70,7 +70,7 @@ public class AddConductorFragment extends Fragment {
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-                else if(id_number.length()!=10)
+                else if(id_number.length()!=8)
                 {
                     builder=new AlertDialog.Builder(getContext());
                     builder.setMessage("ID number should be 10 values");
@@ -131,12 +131,9 @@ public class AddConductorFragment extends Fragment {
 
         return view;
     }
-    public void getInfo()
-    {
-
+    public void getInfo() {
         Intent intent=new Intent(getActivity(), LandingTwoActivity.class);
         startActivity(intent);
-
     }
 
 

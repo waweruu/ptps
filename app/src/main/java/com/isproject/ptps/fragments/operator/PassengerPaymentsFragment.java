@@ -1,8 +1,8 @@
 package com.isproject.ptps.fragments.operator;
 
-import android.app.DownloadManager;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.net.Uri;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -39,7 +38,7 @@ public class PassengerPaymentsFragment extends Fragment {
     private RecyclerView recyclerView;
     private Button start, stop;
     private ArrayList<DataObject> mDataModels = new ArrayList<>();
-    private long startTime, stopTime;
+    private long startTime, stopTime = 0;
     private DataModelsAdapter startAdapter, stopAdapter;
     private String licencePlate;
 
@@ -76,16 +75,13 @@ public class PassengerPaymentsFragment extends Fragment {
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Starting trip...", Toast.LENGTH_LONG).show();
                 startTime = Long.parseLong(TimeUtil.getTimestamp());
-                //Query query = FirebaseDatabase.getInstance().getReference().child("Payments").child("klCPVBLgO5eAjFxeM4RACJGmBQq2");
                 getLicencePlate();
                 Query query = FirebaseDatabase.getInstance().getReference().child("Payments")
                         .orderByChild("transactionDate").startAt(startTime);
-                //DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Payments");
 
                 query.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        //Toast.makeText(getContext(), "No Daa!", Toast.LENGTH_LONG).show();
                         PaymentReceipt receipt = dataSnapshot.getValue(PaymentReceipt.class);
                         if(receipt.getLicencePlate().equals(licencePlate)) mDataModels.add(receipt);
                         startAdapter = new DataModelsAdapter(mDataModels, null, getContext());
@@ -118,48 +114,65 @@ public class PassengerPaymentsFragment extends Fragment {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Stopping trip...", Toast.LENGTH_LONG).show();
-                String time = TimeUtil.getTimestamp();
-                stopTime = Long.parseLong(time);
-                mDataModels.clear();
-                startAdapter = null;
-                Trip trip = new Trip(startTime, stopTime);
-                getLicencePlate();
-                //TODO: Have to find a way to get licence plate
-                FirebaseDatabase.getInstance().getReference().child("Vehicles/" + licencePlate + "/Trips").push().setValue(trip);
-                Query query = FirebaseDatabase.getInstance().getReference().child("Payments")
-                        .orderByChild("transactionDate").startAt(startTime).endAt(stopTime);
-                query.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        if(dataSnapshot.getValue(PaymentReceipt.class).getLicencePlate().equals("KDB 017B")) {
-                            PaymentReceipt receipt = dataSnapshot.getValue(PaymentReceipt.class);
-                            mDataModels.add(receipt);
-                            stopAdapter = new DataModelsAdapter(mDataModels, null, getContext());
-                            recyclerView.setAdapter(stopAdapter);
+                if(startTime == 0) {
+                    AlertDialog.Builder warningBuilder = new AlertDialog.Builder(getContext());
+                    warningBuilder.setCancelable(false);
+                    warningBuilder.setTitle("No trip to stop");
+                    warningBuilder.setMessage("You cannot stop a trip you have not started.");
+                    warningBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
                         }
-                    }
+                    });
+                    AlertDialog warning = warningBuilder.create();
+                    warning.show();
+                } else {
+                    Toast.makeText(getContext(), "Stopping trip...", Toast.LENGTH_LONG).show();
+                    String time = TimeUtil.getTimestamp();
+                    stopTime = Long.parseLong(time);
+                    mDataModels.clear();
+                    startAdapter = null;
+                    Trip trip = new Trip(startTime, stopTime);
+                    startTime = 0;
+                    stopTime = 0;
+                    getLicencePlate();
+                    FirebaseDatabase.getInstance().getReference().child("Vehicles/" + licencePlate + "/Trips").push().setValue(trip);
+                    Query query = FirebaseDatabase.getInstance().getReference().child("Payments")
+                            .orderByChild("transactionDate").startAt(startTime).endAt(stopTime);
+                    query.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            if (dataSnapshot.getValue(PaymentReceipt.class).getLicencePlate().equals("KDB 017B")) {
+                                PaymentReceipt receipt = dataSnapshot.getValue(PaymentReceipt.class);
+                                if (receipt.getTransactionDate() <= stopTime)
+                                    mDataModels.add(receipt);
+                                stopAdapter = new DataModelsAdapter(mDataModels, null, getContext());
+                                recyclerView.setAdapter(stopAdapter);
+                            }
+                        }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
     }

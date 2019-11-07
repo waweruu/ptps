@@ -33,18 +33,21 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 
-public class FareChartFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class FareChartFragment extends Fragment implements AdapterView.OnItemSelectedListener,
+        ChooseLicencePlateFragment.OnLicencePlateClicked {
 
     Spinner start,finish,route_number;
 
     Button create;
-    String licencePlate;
+    //String licencePlate;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     String routeNumber;
     FareChart fareChart = new FareChart();
     AlertDialog.Builder builder;
+
+    Fragment fragment = new ChooseLicencePlateFragment();
 
     public FareChartFragment() {
         // Required empty public constructor
@@ -65,121 +68,17 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        addLicencePlateFragment();
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
-
-        route_number.setAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,Routes.routes_numbers)
-        {
-            @Override
-            public boolean isEnabled(int position) {
-                if(position == 0) return false;
-                else return true;
-            }
-        });
-
-        route_number.setOnItemSelectedListener(this);
-
-        routeNumber = route_number.getSelectedItem().toString();
-
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference();
-
-        FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-
-        String userUID = current_user.getUid();
-
-        DatabaseReference db_ref = firebaseDatabase.getReference().child("Users")
-                .child(userUID).child("vehicles");
-
-        db_ref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                licencePlate = dataSnapshot.child("vehicle").getValue().toString();
-                Toast.makeText(getContext(), licencePlate, Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        DatabaseReference dbref =firebaseDatabase.getReference().child("Vehicles/" +
-                licencePlate + "/FareChart");
-        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    //farechart node
-                    String routeStart = dataSnapshot.getValue(FareChart.class).getRouteStart();
-                    String routeFinish = dataSnapshot.getValue(FareChart.class).getRouteFinish();
-                    String routeNumber = dataSnapshot.getValue(FareChart.class).getRouteNumber();
-                    getInfo(routeNumber, routeStart, routeFinish);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-        final Bundle bundle = getArguments();
-
-        create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(start.getSelectedItem().toString().isEmpty()||finish.getSelectedItem().toString().isEmpty()||route_number.getSelectedItem().toString().isEmpty()){
-                    builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage("Please fill all the fields.");
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
-
-                else{
-                    String routeNumber = route_number.getSelectedItem().toString();
-                    String routeStart=start.getSelectedItem().toString();
-                    String routeFinish=finish.getSelectedItem().toString();
-                    fareChart.setRouteStart(routeStart);
-                    fareChart.setRouteFinish(routeFinish);
-                    //FareChart fareChart = new FareChart(routeNumber, routeStart, routeFinish);
-                   databaseReference.child("Vehicles").child(licencePlate)
-                            .child("FareChart").setValue(fareChart);
-                    Toast.makeText(getActivity(),"Chart Created successfully",Toast.LENGTH_LONG).show();
-                    getInfo(routeNumber,routeStart,routeFinish);
-                }
-
-            }
-        });
-
     }
+
+
     public void getInfo(String routeNumber,String routeStart,String routeFinish)
     {
         Fragment fragment = new EditChartFragment();
@@ -335,5 +234,106 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private void addLicencePlateFragment() {
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.fragment_container, fragment);
+        ft.addToBackStack("ChoosePlateToReview");
+        ft.commit();
+    }
+
+    @Override
+    public void sendSelectedLicencePlate(String licencePlate) {
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        //Toast.makeText(getContext(), "This " + licencePlate, Toast.LENGTH_LONG).show();
+        ft.remove(fragment);
+        ft.commit();
+
+        //showing reviews
+        loadFareChart(licencePlate);
+    }
+
+    public void loadFareChart(final String licencePlate) {
+        route_number.setAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,Routes.routes_numbers)
+        {
+            @Override
+            public boolean isEnabled(int position) {
+                if(position == 0) return false;
+                else return true;
+            }
+        });
+
+        route_number.setOnItemSelectedListener(this);
+
+        routeNumber = route_number.getSelectedItem().toString();
+
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+
+        FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+
+        String userUID = current_user.getUid();
+
+
+
+        DatabaseReference dbref =firebaseDatabase.getReference().child("Vehicles/" +
+                licencePlate + "/FareChart");
+        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    //farechart node
+                    String routeStart = dataSnapshot.getValue(FareChart.class).getRouteStart();
+                    String routeFinish = dataSnapshot.getValue(FareChart.class).getRouteFinish();
+                    String routeNumber = dataSnapshot.getValue(FareChart.class).getRouteNumber();
+                    getInfo(routeNumber, routeStart, routeFinish);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        final Bundle bundle = getArguments();
+
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(start.getSelectedItem().toString().isEmpty()||finish.getSelectedItem().toString().isEmpty()||route_number.getSelectedItem().toString().isEmpty()){
+                    builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Please fill all the fields.");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
+                else{
+                    String routeNumber = route_number.getSelectedItem().toString();
+                    String routeStart=start.getSelectedItem().toString();
+                    String routeFinish=finish.getSelectedItem().toString();
+                    fareChart.setRouteStart(routeStart);
+                    fareChart.setRouteFinish(routeFinish);
+                    //FareChart fareChart = new FareChart(routeNumber, routeStart, routeFinish);
+                    databaseReference.child("Vehicles").child(licencePlate)
+                            .child("FareChart").setValue(fareChart);
+                    Toast.makeText(getActivity(),"Chart Created successfully",Toast.LENGTH_LONG).show();
+                    getInfo(routeNumber,routeStart,routeFinish);
+                }
+
+            }
+        });
     }
 }

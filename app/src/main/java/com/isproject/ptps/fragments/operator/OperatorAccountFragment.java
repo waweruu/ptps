@@ -1,8 +1,6 @@
 package com.isproject.ptps.fragments.operator;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,8 +29,6 @@ import com.isproject.ptps.R;
 import com.isproject.ptps.User;
 import com.isproject.ptps.UserHolder;
 import com.isproject.ptps.activities.WelcomeActivity;
-
-import java.util.ArrayList;
 
 public class OperatorAccountFragment extends Fragment {
 

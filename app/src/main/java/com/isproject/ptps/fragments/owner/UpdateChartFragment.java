@@ -84,10 +84,6 @@ public class UpdateChartFragment extends Fragment {
         String routeBegin = bundle.getString("ROUTE_START");
         String routeEnd = bundle.getString("ROUTE_FINISH");
 
-//
-//        subrouteStart.setSelection(0);
-//        subrouteFinish.setSelection(0);
-//        price.setSelection(0);
         updateSubroute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -125,7 +125,8 @@ public class AddVehicleFragment extends Fragment {
                     databaseReference.child("Vehicles").child(licencePlate)
                             .child("Vehicle Details").setValue(vehicle);
 
-                    NumberPlate plate = new NumberPlate(licencePlate);
+                    NumberPlate plate = new NumberPlate();
+                    plate.setVehicle(licencePlate);
                     databaseReference.child("Users").child(userUID).child("vehicles").push().setValue(plate);
                     Toast.makeText(getContext(),"Vehicle Added Successfully",Toast.LENGTH_LONG).show();
                     getInfo(licencePlate);

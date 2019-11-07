@@ -1,6 +1,5 @@
 package com.isproject.ptps.fragments.owner;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +21,6 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -70,18 +67,7 @@ public class ChooseLicencePlateFragment extends Fragment {
                 adapter.setmCallback(new DataModelsAdapter.OnNumberPlateClicked() {
                     @Override
                     public void sendNumberPlate(String numberPlate) {
-                        //Toast.makeText(getContext(), "" + numberPlate + " clicked!", Toast.LENGTH_SHORT).show();
-
                         onLicencePlateClickedListener.sendSelectedLicencePlate(numberPlate);
-
-                        /*Fragment fragment = new ReviewsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("LICENCE_PLATE", numberPlate);
-                        fragment.setArguments(bundle);
-                        FragmentManager fm = getFragmentManager();
-                        FragmentTransaction ft = fm.beginTransaction();
-                        ft.replace(R.id.fl_content, fragment);
-                        ft.commit();*/
                     }
                 });
                 recyclerView.setAdapter(adapter);

@@ -20,8 +20,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.isproject.ptps.R;
+import com.isproject.ptps.User;
 import com.isproject.ptps.fragments.passenger.PassengerHomeFragment;
 
 public class OwnerHomeFragment extends Fragment {
@@ -29,7 +31,7 @@ public class OwnerHomeFragment extends Fragment {
     private OnOwnerCardClickedListener mlistener;
 
     TextView displayFirstName, displayLastName;
-    private CardView farechart,payment_details,passenger_reviews,add_vehicle;
+    private CardView farechart,payment_details,passenger_reviews,add_vehicle, account;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,21 +50,23 @@ public class OwnerHomeFragment extends Fragment {
         payment_details=view.findViewById(R.id.cardPaymentDetails);
         passenger_reviews=view.findViewById(R.id.cardPassengerReviews);
         add_vehicle=view.findViewById(R.id.cardAddVehicle);
-//        owner_account=view.findViewById(R.id.cardOwnerAccount);
+        account = view.findViewById(R.id.cardOwnerAccount);
+        return view;
+    }
 
-        FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference=firebaseDatabase.getReference();
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        FirebaseUser current_user= FirebaseAuth.getInstance().getCurrentUser();
-
-        final String userUID=current_user.getUid();
-
-        databaseReference.child("Users");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        String userUid = FirebaseAuth.getInstance().getUid();
+        Query query = FirebaseDatabase.getInstance().getReference().child("Users").child(userUid);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String firstName=dataSnapshot.child(userUID).child("firstName").getValue(String.class);
-                displayFirstName.setText(firstName);
+                User user = dataSnapshot.getValue(User.class);
+
+                displayFirstName.setText(user.getFirstName());
+                displayLastName.setText(user.getLastName());
             }
 
             @Override
@@ -70,14 +74,6 @@ public class OwnerHomeFragment extends Fragment {
 
             }
         });
-
-
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
         farechart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +109,14 @@ public class OwnerHomeFragment extends Fragment {
                 }
             }
         });
-
+        account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mlistener != null) {
+                    mlistener.goToOwnerFragment("account");
+                }
+            }
+        });
     }
    public interface OnOwnerCardClickedListener{
         void goToOwnerFragment(String fragment);
