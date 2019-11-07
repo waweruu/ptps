@@ -10,6 +10,8 @@ public class PaymentReceipt extends DataObject implements DataModels {
     private String start;
     private long transactionDate;
 
+    private boolean isExpanded;
+
     public PaymentReceipt() {
     }
 
@@ -78,6 +80,14 @@ public class PaymentReceipt extends DataObject implements DataModels {
 
     public void setTransactionDate(long transactionDate) {
         this.transactionDate = transactionDate;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 
     @Override

@@ -9,7 +9,12 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import com.isproject.ptps.DataModelsAdapter;
 import com.isproject.ptps.fragments.owner.AddVehicleFragment;
+import com.isproject.ptps.fragments.owner.DisplayLicencesFragment;
+import com.isproject.ptps.fragments.owner.EditChartFragment;
+import com.isproject.ptps.fragments.owner.OwnerVehiclesFragment;
+import com.isproject.ptps.fragments.owner.ViewFareChartFragment;
 import com.isproject.ptps.mpesa.interfaces.AuthListener;
 import com.isproject.ptps.mpesa.interfaces.MpesaListener;
 import com.isproject.ptps.mpesa.utils.Pair;
@@ -56,7 +61,7 @@ import android.widget.Toast;
 
 public class LandingTwoActivity extends AppCompatActivity
         implements ScanQrCodeFragment.OnCodeScannedListener,
-        PassengerHomeFragment.OnCardClickedListener, AuthListener, MpesaListener {
+        PassengerHomeFragment.OnCardClickedListener, AuthListener, MpesaListener ,OwnerHomeFragment.OnOwnerCardClickedListener {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
@@ -251,7 +256,7 @@ public class LandingTwoActivity extends AppCompatActivity
                 fragmentClass = FareChartFragment.class;
                 break;
             case R.id.nav_payment_details_frag:
-                fragmentClass = PaymentDetailsFragment.class;
+                fragmentClass = DisplayLicencesFragment.class;
                 break;
             case R.id.nav_passenger_reviews_frag:
                 fragmentClass = PassengerReviewsFragment.class;
@@ -370,6 +375,45 @@ public class LandingTwoActivity extends AppCompatActivity
                 break;
         }
     }
+    public void goToOwnerFragment(String fragment){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment frag;
+        MenuItem item;
+
+        switch(fragment){
+            case "farechart":
+                frag = new OwnerVehiclesFragment();
+                ft.replace(R.id.fl_content, frag);
+                ft.commit();
+                setTitle("Fare Chart");
+                break;
+            case "details":
+                frag = new PaymentDetailsFragment();
+                ft.replace(R.id.fl_content, frag);
+                ft.commit();
+                setTitle("Payment Details");
+                break;
+            case "reviews":
+                frag = new PassengerReviewsFragment();
+                ft.replace(R.id.fl_content, frag);
+                setTitle("Passenger Reviews");
+                ft.commit();
+                break;
+            case "vehicle":
+                frag = new AddVehicleFragment();
+                ft.replace(R.id.fl_content, frag);
+                setTitle("Add Vehicle");
+                ft.commit();
+                break;
+            case "account":
+                frag = new OwnerAccountFragment();
+                ft.replace(R.id.fl_content, frag);
+                setTitle("Account");
+                ft.commit();
+                break;
+        }
+    }
 
 
 
@@ -420,4 +464,5 @@ public class LandingTwoActivity extends AppCompatActivity
     public void onMpesaSuccess(String MerchantRequestID, String CheckoutRequestID, String CustomerMessage) {
         Toast.makeText(this, CustomerMessage, Toast.LENGTH_SHORT).show();
     }
+
 }

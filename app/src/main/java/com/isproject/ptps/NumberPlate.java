@@ -16,10 +16,12 @@ public class NumberPlate extends DataObject implements DataModels {
 
     public void setVehicle(String vehicle) {
         this.vehicle = vehicle;
+
     }
 
     @Override
     public int getModelType() {
         return DataModels.MODEL_NUMBER_PLATE;
+
     }
 }

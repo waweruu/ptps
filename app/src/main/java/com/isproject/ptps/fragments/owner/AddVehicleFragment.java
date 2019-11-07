@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.isproject.ptps.NumberPlate;
 import com.isproject.ptps.R;
 import com.isproject.ptps.Vehicle;
 
@@ -123,6 +124,9 @@ public class AddVehicleFragment extends Fragment {
 
                     databaseReference.child("Vehicles").child(licencePlate)
                             .child("Vehicle Details").setValue(vehicle);
+
+                    NumberPlate plate = new NumberPlate(licencePlate);
+                    databaseReference.child("Users").child(userUID).child("vehicles").push().setValue(plate);
                     Toast.makeText(getContext(),"Vehicle Added Successfully",Toast.LENGTH_LONG).show();
                     getInfo(licencePlate);
 

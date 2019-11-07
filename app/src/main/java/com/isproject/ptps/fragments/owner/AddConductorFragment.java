@@ -1,6 +1,7 @@
 package com.isproject.ptps.fragments.owner;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.isproject.ptps.Operator;
 import com.isproject.ptps.R;
+import com.isproject.ptps.activities.LandingTwoActivity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -131,13 +133,9 @@ public class AddConductorFragment extends Fragment {
     }
     public void getInfo()
     {
-        Fragment fragment = new Fragment();
 
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.fl_content, fragment);
-        ft.addToBackStack("FRAGMENT");
-        ft.commit();
+        Intent intent=new Intent(getActivity(), LandingTwoActivity.class);
+        startActivity(intent);
 
     }
 

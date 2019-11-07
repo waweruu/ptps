@@ -117,6 +117,7 @@ public class VehicleDetailsActivity extends AppCompatActivity {
 
                     databaseReference.child("Vehicles").child(licencePlate)
                             .child("Vehicle Details").setValue(vehicle);
+                    databaseReference.child("Users").child(userUID).child("vehicles").push().setValue(licencePlate);
 
                     //TODO: additional code by Eph
                     NumberPlate numberPlate = new NumberPlate(licencePlate);

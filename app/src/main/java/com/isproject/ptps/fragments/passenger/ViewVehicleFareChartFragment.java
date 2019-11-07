@@ -87,6 +87,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
     private AlertDialog alertDialog;
 
     public static final String NOTIFICATION = "PushNotification";
+
     public static final String BUSINESS_SHORT_CODE = "174379";
     public static final String PASSKEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
     public static final String CONSUMER_KEY = "oMbBhDW1Dj4HewRIjaZXTJNDjQ06b48z";
@@ -201,6 +202,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
                     public void passData(final SubRoute subRoute) {
 
                         //Toast.makeText(context, textPrice.getText(), Toast.LENGTH_SHORT).show();
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Proceed?");
                         View viewSubroute = LayoutInflater.from(getContext()).inflate(R.layout.subroute_info, null);
@@ -216,6 +218,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
                                 final int amount = Integer.parseInt(subRoute.getSubroutePrice());
+
                                 String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
                                 phoneNumber = phoneNumber.substring(1);
                                 //String phoneNumber = "0712771254";
@@ -250,6 +253,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
                                                 Mpesa.getInstance().pay(getContext(), push);
                                             }
                                         });
+
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -262,6 +266,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
 
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
+
                     }
                 });
                 //adapter.setmDataModelsList(mDataModels);
