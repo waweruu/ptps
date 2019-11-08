@@ -46,8 +46,8 @@ import android.widget.Toast;
 
 public class LandingTwoActivity extends AppCompatActivity
         implements ScanQrCodeFragment.OnCodeScannedListener,
-        PassengerHomeFragment.OnCardClickedListener, AuthListener, MpesaListener ,OwnerHomeFragment.OnOwnerCardClickedListener,
-        OperatorHomeFragment.OnOperatorCardClicked {
+        PassengerHomeFragment.OnCardClickedListener,OwnerHomeFragment.OnOwnerCardClickedListener,
+        OperatorHomeFragment.OnOperatorCardClicked, AuthListener, MpesaListener {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
@@ -95,7 +95,7 @@ public class LandingTwoActivity extends AppCompatActivity
                             FragmentTransaction ft = fm.beginTransaction();
                             ft.replace(R.id.fl_content, fragment);
                             setTitle("Home");
-                            ft.commit();
+                            ft.commitAllowingStateLoss();
                         } else if (userType.equals("Owner")) {
                             navigationView.inflateMenu(R.menu.owner_drawer_view);
                             setupOwnerDrawerContent(navigationView);
@@ -104,7 +104,7 @@ public class LandingTwoActivity extends AppCompatActivity
                             FragmentTransaction ft = fm.beginTransaction();
                             ft.replace(R.id.fl_content, fragment);
                             setTitle("Home");
-                            ft.commit();
+                            ft.commitAllowingStateLoss();
                         } else if (userType.equals("Conductor") || userType.equals("Driver")) {
                             navigationView.inflateMenu(R.menu.operator_drawer_view);
                             setupOperatorDrawerContent(navigationView);
@@ -113,7 +113,7 @@ public class LandingTwoActivity extends AppCompatActivity
                             FragmentTransaction ft = fm.beginTransaction();
                             ft.replace(R.id.fl_content, fragment);
                             setTitle("Home");
-                            ft.commit();
+                            ft.commitAllowingStateLoss();
                         }
                     } else {
                         String message = "Not working";
@@ -394,26 +394,6 @@ public class LandingTwoActivity extends AppCompatActivity
     }
 
     @Override
-    public void onAuthError(Pair<Integer, String> result) {
-        Log.e("Error", result.message);
-    }
-
-    @Override
-    public void onAuthSuccess() {
-        Toast.makeText(this, "MPesa Auth successful!", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onMpesaError(Pair<Integer, String> result) {
-        Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onMpesaSuccess(String MerchantRequestID, String CheckoutRequestID, String CustomerMessage) {
-        Toast.makeText(this, CustomerMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void goToOperatorFragment(String fragment) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -435,5 +415,26 @@ public class LandingTwoActivity extends AppCompatActivity
                 ft.commit();
                 break;
         }
+    }
+
+    @Override
+    public void onAuthError(Pair<Integer, String> result) {
+        Log.e("Error", result.message);
+    }
+
+    @Override
+    public void onAuthSuccess() {
+        Toast.makeText(this, "M-Pesa Auth successful!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMpesaError(Pair<Integer, String> result) {
+        ViewVehicleFareChartFragment.alertDialog.hide();
+        Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMpesaSuccess(String MerchantRequestID, String CheckoutRequestID, String CustomerMessage) {
+        Toast.makeText(this, CustomerMessage, Toast.LENGTH_SHORT).show();
     }
 }

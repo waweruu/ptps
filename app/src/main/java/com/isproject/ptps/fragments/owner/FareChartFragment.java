@@ -79,20 +79,19 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
     }
 
 
-    public void getInfo(String routeNumber,String routeStart,String routeFinish)
-    {
+    public void getInfo(String routeNumber,String routeStart,String routeFinish, String licencePlate) {
         Fragment fragment = new EditChartFragment();
-
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.fl_content, fragment);
-        ft.commit();
-
         Bundle bundle = new Bundle();
         bundle.putString("ROUTE_NUMBER", routeNumber);
         bundle.putString("ROUTE_START",routeStart);
         bundle.putString("ROUTE_FINISH",routeFinish);
+        bundle.putString("LICENCE_PLATE", licencePlate);
         fragment.setArguments(bundle);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fl_content, fragment);
+        ft.addToBackStack("EditChart");
+        ft.commit();
     }
 
     @Override
@@ -257,6 +256,29 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
     }
 
     public void loadFareChart(final String licencePlate) {
+        //Checking if the farechart node exists
+        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference().child("Vehicles/" +
+                licencePlate + "/FareChart");
+        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    //farechart node
+                    String routeStart = dataSnapshot.getValue(FareChart.class).getRouteStart();
+                    String routeFinish = dataSnapshot.getValue(FareChart.class).getRouteFinish();
+                    String routeNumber = dataSnapshot.getValue(FareChart.class).getRouteNumber();
+                    getInfo(routeNumber, routeStart, routeFinish, licencePlate);
+                } else {
+                    //farechart node doesn't exist
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         route_number.setAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,Routes.routes_numbers)
         {
             @Override
@@ -270,45 +292,13 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
 
         routeNumber = route_number.getSelectedItem().toString();
 
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference();
-
-        FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-
-        String userUID = current_user.getUid();
-
-
-
-        DatabaseReference dbref =firebaseDatabase.getReference().child("Vehicles/" +
-                licencePlate + "/FareChart");
-        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    //farechart node
-                    String routeStart = dataSnapshot.getValue(FareChart.class).getRouteStart();
-                    String routeFinish = dataSnapshot.getValue(FareChart.class).getRouteFinish();
-                    String routeNumber = dataSnapshot.getValue(FareChart.class).getRouteNumber();
-                    getInfo(routeNumber, routeStart, routeFinish);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-        final Bundle bundle = getArguments();
-
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(start.getSelectedItem().toString().isEmpty()||finish.getSelectedItem().toString().isEmpty()||route_number.getSelectedItem().toString().isEmpty()){
                     builder = new AlertDialog.Builder(getContext());
                     builder.setMessage("Please fill all the fields.");
+                    builder.setCancelable(false);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -330,7 +320,7 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
                     databaseReference.child("Vehicles").child(licencePlate)
                             .child("FareChart").setValue(fareChart);
                     Toast.makeText(getActivity(),"Chart Created successfully",Toast.LENGTH_LONG).show();
-                    getInfo(routeNumber,routeStart,routeFinish);
+                    getInfo(routeNumber,routeStart,routeFinish,licencePlate);
                 }
 
             }

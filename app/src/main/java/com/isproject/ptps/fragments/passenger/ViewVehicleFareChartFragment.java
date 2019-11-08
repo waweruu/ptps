@@ -84,7 +84,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private AlertDialog.Builder builder;
-    private AlertDialog alertDialog;
+    public static AlertDialog alertDialog;
 
     public static final String NOTIFICATION = "PushNotification";
 
@@ -216,7 +216,6 @@ public class ViewVehicleFareChartFragment extends Fragment {
 
                                 String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
                                 phoneNumber = phoneNumber.substring(1);
-                                Toast.makeText(getContext(), phoneNumber, Toast.LENGTH_LONG).show();
 
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                 builder.setTitle("Processing payment");
@@ -243,7 +242,6 @@ public class ViewVehicleFareChartFragment extends Fragment {
                                                         numberPlate + "/" + USER_UID + "/" + subRoute.getSubrouteStart() +
                                                         "/" + subRoute.getSubrouteFinish() + "/" + TOKEN);
                                                 STKPush push = stkBuilder.build();
-                                                Toast.makeText(getContext(), TOKEN, Toast.LENGTH_LONG).show();
                                                 Mpesa.getInstance().pay(getContext(), push);
                                             }
                                         });
