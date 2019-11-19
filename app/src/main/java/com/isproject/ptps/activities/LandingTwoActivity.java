@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.isproject.ptps.fragments.owner.AddVehicleFragment;
+import com.isproject.ptps.mpesa.Mpesa;
 import com.isproject.ptps.mpesa.interfaces.AuthListener;
 import com.isproject.ptps.mpesa.interfaces.MpesaListener;
 import com.isproject.ptps.mpesa.utils.Pair;
@@ -58,7 +59,6 @@ public class LandingTwoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser != null) {

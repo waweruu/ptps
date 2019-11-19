@@ -58,10 +58,10 @@ public class ConductorDetailsActivity extends AppCompatActivity {
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-                else if(textConductorId.length()!=10)
+                else if(textConductorId.length()!=8)
                 {
                     builder=new AlertDialog.Builder(ConductorDetailsActivity.this);
-                    builder.setMessage("ID number should be 10 values");
+                    builder.setMessage("ID number should be 8 numbers");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

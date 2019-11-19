@@ -6,15 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,12 +31,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.isproject.ptps.FMS;
 import com.isproject.ptps.Review;
 import com.isproject.ptps.mpesa.Mode;
 import com.isproject.ptps.mpesa.Mpesa;
-import com.isproject.ptps.mpesa.interfaces.AuthListener;
-import com.isproject.ptps.mpesa.interfaces.MpesaListener;
 import com.isproject.ptps.mpesa.models.STKPush;
 import com.isproject.ptps.mpesa.utils.Pair;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -82,8 +75,6 @@ public class ViewVehicleFareChartFragment extends Fragment {
     private ArrayList<DataObject> mDataModels;
     private ArrayList<SubRoute> mSubRoutes;
     private RecyclerView recyclerView;
-    private ProgressBar progressBar;
-    private AlertDialog.Builder builder;
     public static AlertDialog alertDialog;
 
     public static final String NOTIFICATION = "PushNotification";
@@ -116,6 +107,7 @@ public class ViewVehicleFareChartFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Mpesa.with(getContext(), CONSUMER_KEY, CONSUMER_SECRET);
     }
 
     @Override
@@ -130,9 +122,6 @@ public class ViewVehicleFareChartFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        Mpesa.with(getContext(), CONSUMER_KEY, CONSUMER_SECRET, Mode.SANDBOX);
-
         final Bundle bundle = this.getArguments();
         final String licencePlate = bundle.getString("LICENCE_PLATE");
         LICENCE_PLATE = licencePlate;
@@ -242,7 +231,8 @@ public class ViewVehicleFareChartFragment extends Fragment {
                                                         numberPlate + "/" + USER_UID + "/" + subRoute.getSubrouteStart() +
                                                         "/" + subRoute.getSubrouteFinish() + "/" + TOKEN);
                                                 STKPush push = stkBuilder.build();
-                                                Mpesa.getInstance().pay(getContext(), push);
+                                                Toast.makeText(getContext(), "DLoading", Toast.LENGTH_SHORT).show();
+                                                Mpesa.pay(getContext(), push);
                                             }
                                         });
 

@@ -117,7 +117,7 @@ public class VehicleDetailsActivity extends AppCompatActivity {
 
                     databaseReference.child("Vehicles").child(licencePlate)
                             .child("Vehicle Details").setValue(vehicle);
-                    databaseReference.child("Users").child(userUID).child("vehicles").push().setValue(licencePlate);
+                    //databaseReference.child("Users").child(userUID).child("vehicles").push().setValue(licencePlate);
 
                     NumberPlate numberPlate = new NumberPlate(licencePlate);
                     FirebaseDatabase.getInstance().getReference().child("Users").child(userUID)

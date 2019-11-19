@@ -74,7 +74,7 @@ public class Mpesa {
         return instance;
     }
 
-    public void pay(Context context, STKPush push){
+    public static void pay(Context context, STKPush push){
         //TODO pay
         if (! (context instanceof AuthListener)){
             throw new RuntimeException("Context must implement MpesaListener");
@@ -153,7 +153,7 @@ public class Mpesa {
 
         protected void onPostExecute(Pair<Integer, String> result) {
             if (result == null) {
-                Mpesa.getInstance().mpesaListener.onMpesaError(new Pair<>(418, Config.ERROR)); //User is a teapot :(
+                Mpesa.mpesaListener.onMpesaError(new Pair<>(418, Config.ERROR)); //User is a teapot :(
                 return;
             }
             try {
@@ -164,18 +164,17 @@ public class Mpesa {
                     //Error occurred
                     if (jo.has("errorMessage")) {
                         String message = jo.get("errorMessage").getAsString();
-                        Mpesa.getInstance().mpesaListener.onMpesaError(new Pair<>(result.code, message));
+                        Mpesa.mpesaListener.onMpesaError(new Pair<>(result.code, message));
                         return;
                     }
                     String message = "Error completing payment.Please try again.";
-                    Mpesa.getInstance().mpesaListener.onMpesaError(new Pair<>(result.code, message));
+                    Mpesa.mpesaListener.onMpesaError(new Pair<>(result.code, message));
                     return;
                 }
-                Mpesa.getInstance().mpesaListener.onMpesaSuccess(jo.get("MerchantRequestID").getAsString(), jo.get("CheckoutRequestID").getAsString(), jo.get("CustomerMessage").getAsString());
-                return;
+                Mpesa.mpesaListener.onMpesaSuccess(jo.get("MerchantRequestID").getAsString(), jo.get("CheckoutRequestID").getAsString(), jo.get("CustomerMessage").getAsString());
             } catch (Exception e) {
                 String message = "Error completing payment.Please try again.";
-                Mpesa.getInstance().mpesaListener.onMpesaError(new Pair<>(result.code, message));
+                Mpesa.mpesaListener.onMpesaError(new Pair<>(result.code, message));
             }
         }
     }

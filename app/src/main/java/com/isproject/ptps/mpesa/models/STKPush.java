@@ -74,6 +74,8 @@ public class STKPush {
             this.accountReference = Utils.sanitizePhoneNumber(phoneNumber);
             this.transactionDesc = Utils.sanitizePhoneNumber(phoneNumber);
             this.callBackURL = callBackURL;
+            this.accountReference = "test";
+            this.transactionDesc = "test";
         }
         public Builder setTransactionType(String transactionType){
             this.transactionType = transactionType;

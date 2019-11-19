@@ -6,11 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.owner.AddConductorFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Add Conductor"
+        android:layout_margin="50dp"
+        android:textColor="@color/primaryLightColor"
+        android:textStyle="bold"
+        android:textSize="22sp" />
+
     <LinearLayout
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:layout_marginLeft="90dp"
+        android:gravity="center"
         android:orientation="vertical"
         >
         <EditText
@@ -65,7 +76,7 @@
             android:text=" ADD CONDUCTOR "
             android:textColor="@color/textColor"
             android:layout_below="@id/editTextDriverPhoneNumber"
-            android:layout_margin="50dp"/>
+            android:layout_margin="50dp" />
     </LinearLayout>
 
 </LinearLayout>

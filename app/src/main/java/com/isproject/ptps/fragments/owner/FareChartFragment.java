@@ -42,7 +42,6 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
     //String licencePlate;
 
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
     String routeNumber;
     FareChart fareChart = new FareChart();
     AlertDialog.Builder builder;
@@ -317,7 +316,7 @@ public class FareChartFragment extends Fragment implements AdapterView.OnItemSel
                     fareChart.setRouteStart(routeStart);
                     fareChart.setRouteFinish(routeFinish);
                     //FareChart fareChart = new FareChart(routeNumber, routeStart, routeFinish);
-                    databaseReference.child("Vehicles").child(licencePlate)
+                    FirebaseDatabase.getInstance().getReference().child("Vehicles").child(licencePlate)
                             .child("FareChart").setValue(fareChart);
                     Toast.makeText(getActivity(),"Chart Created successfully",Toast.LENGTH_LONG).show();
                     getInfo(routeNumber,routeStart,routeFinish,licencePlate);

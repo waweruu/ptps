@@ -59,10 +59,10 @@ public class DriverDetailsActivity extends AppCompatActivity {
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-                else if(textDriverId.length()!=10)
+                else if(textDriverId.length()!=8)
                 {
                     builder=new AlertDialog.Builder(DriverDetailsActivity.this);
-                    builder.setMessage("ID number should be 10 values");
+                    builder.setMessage("ID number should be 8 numbers");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
